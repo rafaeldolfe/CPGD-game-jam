@@ -63,51 +63,13 @@ public class MapGrid<TGridObject>
         return pos;
     }
 
-    private void GetXY(Vector3 worldPosition, out int x, out int y)
+    public void GetXY(Vector3 worldPosition, out int x, out int z)
     {
-        x = Mathf.FloorToInt((worldPosition - originPosition).x / cellSize);
-        y = Mathf.FloorToInt((worldPosition - originPosition).y / cellSize);
+        Vector3 newWorldPosition = worldPosition;
+        newWorldPosition.y = 0;
+        x = Mathf.FloorToInt((newWorldPosition - originPosition).x / cellSize);
+        z = Mathf.FloorToInt((newWorldPosition - originPosition).z / cellSize);
     }
-
-    // public void SetValue(int x, int y, TGridObject value)
-    // {
-    //     if (x >= 0 && y >= 0 && x < width && y < height)
-    //     {
-    //         gridArray[x, y] = value;
-    //     }
-    // }
-
-    // public void SetValue(Vector3 worldPosition, TGridObject value)
-    // {
-    //     int x, y;
-    //     GetXY(worldPosition, out x, out y);
-    //     SetValue(x, y, value);
-    // }
-
-    // public void SetColor(int x, int y, Material transparentMat)
-    // {
-    //     if (x > gridArray.GetLength(0) || x < 0 || y > gridArray.GetLength(1) || y < 0)
-    //     {
-    //         return;
-    //     }
-    //     if (x >= 0 && y >= 0 && x < width && y < height)
-    //     {
-    //         GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-    //         cube.layer = 8;
-    //         cube.GetComponent<MeshRenderer>().material = new Material(transparentMat);
-    //         cube.transform.position = GetWorldPosition(x, y) - new Vector3(-cellSize, -cellSize) / 2;
-    //         cube.transform.localScale = new Vector3(cellSize, cellSize, cellSize);
-    //         highlightArray[x, y] = cube;
-    //     }
-    // }
-
-    // public void SetColor(Vector3 worldPosition, Material transparentMat, Color color)
-    // {
-    //     int x, y;
-    //     GetXY(worldPosition, out x, out y);
-    //     transparentMat.SetColor("_Color", color);
-    //     SetColor(x, y, transparentMat);
-    // }
 
     public TGridObject GetValue(int x, int y)
     {
