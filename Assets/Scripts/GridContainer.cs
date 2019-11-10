@@ -28,8 +28,8 @@ public class GridContainer
     public void AddUnit(int x, int z, GameObject unit)
     {
         Debug.Log(unit.GetComponent<MetaInformation>());
-        unit.GetComponent<MetaInformation>().x = x;
-        unit.GetComponent<MetaInformation>().z = z;
+        //unit.GetComponent<MetaInformation>().x = x;
+        //unit.GetComponent<MetaInformation>().z = z;
         gos.Add(unit);
     }
 
