@@ -20,13 +20,13 @@ public class GameManager : MonoBehaviour
     public GameObject smallPrefab;
     public GameObject mediumPrefab;
     public GameObject largePrefab;
-    public GameObject unit;
+    public GameObject unitPrefab;
     public GameObject flagPrefab;
     public GameObject villager1Prefab;
     public GameObject villager2Prefab;
-    public GameObject mediumVillage;
-    public GameObject mediumForest; 
-    public GameObject water; 
+    public GameObject mediumVillagePrefab;
+    public GameObject mediumForestPrefab; 
+    public GameObject waterPrefab; 
     public List<GameObject> units = new List<GameObject>();
     private GameObject selected;
     #endregion
@@ -128,12 +128,12 @@ public class GameManager : MonoBehaviour
     //         }
     //     }
 
-    //     // grid.gridArray[4, 8].AddUnit(mediumForest);
+    //     // grid.gridArray[4, 8].AddUnit(mediumForestPrefab);
     //     // grid.gridArray[5, 8].AddUnit(medium);
     //     // grid.gridArray[5, 7].AddUnit(medium);
     //     // grid.gridArray[4, 7].AddUnit(medium);
-    //     // grid.gridArray[7, 5].AddUnit(mediumVillage);
-    //     // grid.gridArray[2, 5].AddUnit(mediumForest);
+    //     // grid.gridArray[7, 5].AddUnit(mediumVillagePrefab);
+    //     // grid.gridArray[2, 5].AddUnit(mediumForestPrefab);
     //     // grid.gridArray[8, 3].AddUnit(medium);
     //     // grid.gridArray[3, 2].AddUnit(medium);
     //     // grid.gridArray[2, 2].AddUnit(medium);
@@ -212,32 +212,33 @@ public class GameManager : MonoBehaviour
         {
             for (int z = 0; z < grid.gridArray.GetLength(1); z++)
             {
-                grid.gridArray[x,z].AddUnit(x, z, water);
+                GameObject water = UnityEngine.Object.Instantiate(waterPrefab, waterPrefab.transform.position + new Vector3(x, -0.5f, z), Quaternion.identity);
+                grid.gridArray[x,z].SetFloor(water, 0.0f);
             }
         }
         Debug.Log("GenerateGrid");
         
-        grid.gridArray[4,8].AddUnit(4, 8, mediumForest); 
-        grid.gridArray[5,8].AddUnit(5, 8, mediumPrefab);
-        grid.gridArray[5,7].AddUnit(5, 7, mediumPrefab);
-        grid.gridArray[4,7].AddUnit(4, 7, mediumPrefab);
-        grid.gridArray[7,5].AddUnit(7, 5, mediumVillage);
-        grid.gridArray[2,5].AddUnit(2, 5, mediumForest);
-        grid.gridArray[8,3].AddUnit(8, 3, mediumPrefab);
-        grid.gridArray[3,2].AddUnit(3, 2, mediumPrefab);
-        grid.gridArray[2,2].AddUnit(2, 2, mediumPrefab);
+        // grid.gridArray[4,8].AddUnit(4, 8, mediumForestPrefab); 
+        // grid.gridArray[5,8].AddUnit(5, 8, mediumPrefab);
+        // grid.gridArray[5,7].AddUnit(5, 7, mediumPrefab);
+        // grid.gridArray[4,7].AddUnit(4, 7, mediumPrefab);
+        // grid.gridArray[7,5].AddUnit(7, 5, mediumVillagePrefab);
+        // grid.gridArray[2,5].AddUnit(2, 5, mediumForestPrefab);
+        // grid.gridArray[8,3].AddUnit(8, 3, mediumPrefab);
+        // grid.gridArray[3,2].AddUnit(3, 2, mediumPrefab);
+        // grid.gridArray[2,2].AddUnit(2, 2, mediumPrefab);
 
-        grid.gridArray[6,7].AddUnit(6, 7, largePrefab);
-        grid.gridArray[1,5].AddUnit(1, 5, largePrefab);
-        grid.gridArray[1,4].AddUnit(1, 4, largePrefab);
-        grid.gridArray[3,3].AddUnit(3, 3, largePrefab);
+        // grid.gridArray[6,7].AddUnit(6, 7, largePrefab);
+        // grid.gridArray[1,5].AddUnit(1, 5, largePrefab);
+        // grid.gridArray[1,4].AddUnit(1, 4, largePrefab);
+        // grid.gridArray[3,3].AddUnit(3, 3, largePrefab);
 
-        grid.gridArray[3,6].AddUnit(3, 6, smallPrefab);
-        grid.gridArray[4,6].AddUnit(4, 6, smallPrefab);
-        grid.gridArray[4,3].AddUnit(4, 3, smallPrefab);
-        grid.gridArray[4,2].AddUnit(4, 2, smallPrefab);
-        grid.gridArray[5,2].AddUnit(5, 2, smallPrefab);
-        grid.gridArray[7,3].AddUnit(7, 3, smallPrefab);
+        // grid.gridArray[3,6].AddUnit(3, 6, smallPrefab);
+        // grid.gridArray[4,6].AddUnit(4, 6, smallPrefab);
+        // grid.gridArray[4,3].AddUnit(4, 3, smallPrefab);
+        // grid.gridArray[4,2].AddUnit(4, 2, smallPrefab);
+        // grid.gridArray[5,2].AddUnit(5, 2, smallPrefab);
+        // grid.gridArray[7,3].AddUnit(7, 3, smallPrefab);
 
 
         for (int x = 0; x < grid.gridArray.GetLength(0); x++)
@@ -266,9 +267,9 @@ public class GameManager : MonoBehaviour
 
 
 
-        GameObject newUnit = UnityEngine.Object.Instantiate(unit, unit.transform.position + new Vector3(1, 0, 1), Quaternion.identity);
+        GameObject newUnit = UnityEngine.Object.Instantiate(unitPrefab, unitPrefab.transform.position + new Vector3(1, 0, 1), Quaternion.identity);
         newUnit.GetComponent<MetaInformation>().init(1, 1);
-        unit.GetComponent<MoveQueue>().AddMove(new Vector3(3, grid.gridArray[3,3].height, 3));
+        unitPrefab.GetComponent<MoveQueue>().AddMove(new Vector3(3, grid.gridArray[3,3].height, 3));
         grid.gridArray[1,1].AddUnit(1, 1, newUnit);
         units.Add(newUnit);
 
@@ -313,20 +314,20 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        // foreach (var unit in units)
+        // foreach (var unitPrefab in units)
         // {
-        //     if(unit.GetComponent<State>().GetState() == Constants.IDLE)
+        //     if(unitPrefab.GetComponent<State>().GetState() == Constants.IDLE)
         //     {
-        //         MetaInformation mi = unit.GetComponent<MetaInformation>();
+        //         MetaInformation mi = unitPrefab.GetComponent<MetaInformation>();
         //         int movex = Random.Range(0,2);
         //         int movez = Random.Range(0,2);
         //         if (movex == 1)
         //         {
-        //             unit.GetComponent<MoveQueue>().AddMove(new Vector3(mi.x + movex, grid.gridArray[mi.x,mi.z].height, mi.z));
+        //             unitPrefab.GetComponent<MoveQueue>().AddMove(new Vector3(mi.x + movex, grid.gridArray[mi.x,mi.z].height, mi.z));
         //         }
         //         else if (movez == 1)
         //         {
-        //             unit.GetComponent<MoveQueue>().AddMove(new Vector3(mi.x, grid.gridArray[mi.x,mi.z].height, mi.z + movez));
+        //             unitPrefab.GetComponent<MoveQueue>().AddMove(new Vector3(mi.x, grid.gridArray[mi.x,mi.z].height, mi.z + movez));
         //         }
         //     }
         // }
