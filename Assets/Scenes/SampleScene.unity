@@ -307,7 +307,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0.5, g: 0.5, b: 0.5, a: 0}
   m_projectionMatrixMode: 1
   m_SensorSize: {x: 36, y: 24}
   m_LensShift: {x: 0, y: 0}
@@ -624,9 +624,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 634ef14498b15ba4e93430e656badf34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainCamera: {fileID: 0}
   bridgesText: {fileID: 682827917}
   titleScreen: {fileID: 1207725195}
   gameOverScreen: {fileID: 1168207088}
+  titleBackgroundColor: {r: 0.5019608, g: 0.5019608, b: 0.5019608, a: 0}
+  gameBackgroundColor: {r: 0.501513, g: 0.9245283, b: 0.67071915, a: 0}
   small: {fileID: 5392633345588685800, guid: 9f8d690eeaa34334fbc1b28362f2eeeb, type: 3}
   medium: {fileID: 1888997304066154816, guid: 5e4d2d3460c56ac4e93075b784b6d200, type: 3}
   large: {fileID: 1181195752831844359, guid: 4cc993d257604c345ba4c17fa22dc1cc, type: 3}
@@ -635,6 +638,32 @@ MonoBehaviour:
   mediumForest: {fileID: 6604530842377122371, guid: fe7ec277763c43743ac09ff674ed0b0e,
     type: 3}
   water: {fileID: 7294360027076636351, guid: 6f3f0d34a30a0fb478e28b57c7a71f7c, type: 3}
+  bridgeE1_Left: {fileID: 6540894939673018030, guid: a6a758a2efa9e6d4e88204a8d9b95581,
+    type: 3}
+  bridgeE1_Right: {fileID: 6147341881977545817, guid: 6e4867a0694c17e4da9a128b4111d6b9,
+    type: 3}
+  bridgeE1Corner_Down: {fileID: 326842408615072763, guid: 4b1cfadd3108a2b4098d850725025361,
+    type: 3}
+  bridgeE1Corner_Left: {fileID: 1927654990151282318, guid: 7d503f4161464c54bac4e1a7f079f909,
+    type: 3}
+  bridgeE1Corner_Up: {fileID: 4636053182650736279, guid: 8532528a51f68694b9a7096a4b8686a6,
+    type: 3}
+  bridgeE1Corner_Right: {fileID: 7737829874094283397, guid: dd794c56b8050714a87acaada3f063c6,
+    type: 3}
+  bridgeE2_Left: {fileID: 8343927401258547944, guid: 65fe308f21bf81944916954762510b22,
+    type: 3}
+  bridgeE2_Right: {fileID: 1048029292246012024, guid: d74df90b9d5d1274b9281ec85472c6f6,
+    type: 3}
+  bridgeE2Corner_Down: {fileID: 9053457355326225984, guid: 20016d0c42e3e304dace53329cf60246,
+    type: 3}
+  bridgeE2Corner_Left: {fileID: 8810552284625896215, guid: 5b740cc7a21e10746b84aa74e177f040,
+    type: 3}
+  bridgeE2Corner_Up: {fileID: 2372552752587351525, guid: 0ab003407a125d44b8d68fff18c3155f,
+    type: 3}
+  bridgeE2Corner_Right: {fileID: 7317771080559025310, guid: 739b2c80d64624840bea51a5fddd261e,
+    type: 3}
+  bridgeE1_y: 0.1875
+  bridgeE2_y: 0.4375
   isGameActive: 0
 --- !u!4 &972558199
 Transform:
@@ -1382,7 +1411,7 @@ Light:
   serializedVersion: 8
   m_Type: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 1
+  m_Intensity: 1.4
   m_Range: 10
   m_SpotAngle: 30
   m_CookieSize: 10

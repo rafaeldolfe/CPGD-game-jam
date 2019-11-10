@@ -7,10 +7,14 @@ using TMPro;
 using System;
 public class GameManager : MonoBehaviour
 {
+    public Camera mainCamera;
+
     //UI (menu) vars
     public TextMeshProUGUI bridgesText;
     public GameObject titleScreen;
     public GameObject gameOverScreen;
+    public Color titleBackgroundColor, gameBackgroundColor;
+
     //UI (gameplay) vars
     public MapGrid<GridContainer> grid;
     public GameObject small;
@@ -19,6 +23,21 @@ public class GameManager : MonoBehaviour
     public GameObject mediumVillage;
     public GameObject mediumForest;
     public GameObject water;
+    public GameObject bridgeE1_Left;
+    public GameObject bridgeE1_Right;
+    public GameObject bridgeE1Corner_Down;
+    public GameObject bridgeE1Corner_Left;
+    public GameObject bridgeE1Corner_Up;
+    public GameObject bridgeE1Corner_Right;
+    public GameObject bridgeE2_Left;
+    public GameObject bridgeE2_Right;
+    public GameObject bridgeE2Corner_Down;
+    public GameObject bridgeE2Corner_Left;
+    public GameObject bridgeE2Corner_Up;
+    public GameObject bridgeE2Corner_Right;
+
+    public float bridgeE1_y = .1875f;
+    public float bridgeE2_y = .4375f;
 
     //public vars
     public bool isGameActive;
@@ -29,7 +48,9 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        mainCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
+        mainCamera.clearFlags = CameraClearFlags.SolidColor;
+        mainCamera.backgroundColor = titleBackgroundColor;
     }
 
     // Update is called once per frame
@@ -41,6 +62,7 @@ public class GameManager : MonoBehaviour
     public void StartGame(int difficulty)
     {
         isGameActive = true;
+        mainCamera.backgroundColor = gameBackgroundColor;
 
         bridgesText.gameObject.SetActive(true);
         bridges = 0;
@@ -52,6 +74,7 @@ public class GameManager : MonoBehaviour
         titleScreen.gameObject.SetActive(false);
 
         GenerateGrid();
+        TestGenerateBridge();
     }
 
     #region Update Game (example): gain 1 bridge every 1 or 1/2 or 1/3 sec (difficulty determines this), game over at 10 bridges
@@ -139,8 +162,25 @@ public class GameManager : MonoBehaviour
         }*/
     }
 
+    void TestGenerateBridge() //implemented gridTest's grid generation into GameManager
+    {
+        grid = new MapGrid<GridContainer>(10, 10, 1, new Vector3(0, 0, 0), (MapGrid<GridContainer> g, int x, int y) => new GridContainer(g, x, y));
+
+        for (int x = 0; x < grid.gridArray.GetLength(0); x++)
+        {
+            for (int y = 0; y < grid.gridArray.GetLength(1); y++)
+            {
+                grid.gridArray[x, y].AddUnit(water);
+            }
+        }
+        grid.gridArray[6, 5].AddUnit(bridgeE2_Left);
+        grid.gridArray[5, 5].AddUnit(bridgeE2Corner_Down);
+        grid.gridArray[5, 6].AddUnit(bridgeE2_Right);
+    }
+
     public void GameOver()
     {
+        mainCamera.backgroundColor = titleBackgroundColor;
         isGameActive = false;
         gameOverScreen.gameObject.SetActive(true);
     }
