@@ -11,7 +11,7 @@ public class GridTests : MonoBehaviour
     public GameObject mediumVillage;
     public GameObject mediumForest; 
     public GameObject water; 
-    void Start()
+    void GenerateGrid() //implemented gridTest's grid generation into GameManager
     {
         grid = new MapGrid<GridContainer>(10, 10, 1, new Vector3(0,0,0), (MapGrid<GridContainer> g, int x, int y) => new GridContainer(g, x, y));
 

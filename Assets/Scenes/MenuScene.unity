@@ -1769,6 +1769,14 @@ MonoBehaviour:
   bridgesText: {fileID: 1951814226}
   titleScreen: {fileID: 1113613687}
   gameOverScreen: {fileID: 1893619421}
+  small: {fileID: 5392633345588685800, guid: 9f8d690eeaa34334fbc1b28362f2eeeb, type: 3}
+  medium: {fileID: 1888997304066154816, guid: 5e4d2d3460c56ac4e93075b784b6d200, type: 3}
+  large: {fileID: 1181195752831844359, guid: 4cc993d257604c345ba4c17fa22dc1cc, type: 3}
+  mediumVillage: {fileID: 4478584081690314797, guid: 54649cf324aa123449a62f6625555ef9,
+    type: 3}
+  mediumForest: {fileID: 6604530842377122371, guid: fe7ec277763c43743ac09ff674ed0b0e,
+    type: 3}
+  water: {fileID: 7294360027076636351, guid: 6f3f0d34a30a0fb478e28b57c7a71f7c, type: 3}
   isGameActive: 0
 --- !u!4 &1952137790
 Transform:
