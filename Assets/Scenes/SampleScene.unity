@@ -297,7 +297,7 @@ MonoBehaviour:
   large: {fileID: 1181195752831844359, guid: 4cc993d257604c345ba4c17fa22dc1cc, type: 3}
   mediumVillage: {fileID: 4478584081690314797, guid: 54649cf324aa123449a62f6625555ef9,
     type: 3}
-  mediumforest: {fileID: 6604530842377122371, guid: fe7ec277763c43743ac09ff674ed0b0e,
+  mediumForest: {fileID: 6604530842377122371, guid: fe7ec277763c43743ac09ff674ed0b0e,
     type: 3}
   water: {fileID: 7294360027076636351, guid: 6f3f0d34a30a0fb478e28b57c7a71f7c, type: 3}
 --- !u!4 &2045791437
