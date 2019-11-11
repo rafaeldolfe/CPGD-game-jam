@@ -148,20 +148,7 @@ public class GameManager : MonoBehaviour
     #region GridTest
     public void GenerateGrid()
     {
-
-        //GenerateRandomGrid();
         GenerateLevelGrid();
-
-        GameObject newUnit = UnityEngine.Object.Instantiate(unitPrefab, unitPrefab.transform.position + new Vector3(2, 0, 2), Quaternion.identity);
-        grid.gridArray[2,2].AddUnit(2, 2, newUnit);
-        units.Add(newUnit);
-
-        /*GameObject villager1 = UnityEngine.Object.Instantiate(villager1Prefab, villager1Prefab.transform.position + new Vector3(3, 0, 2), Quaternion.identity);
-        grid.gridArray[3,2].AddUnit(3, 2, villager1);
-
-        GameObject villager2 = UnityEngine.Object.Instantiate(villager2Prefab, villager2Prefab.transform.position + new Vector3(2, 0, 3), Quaternion.identity);
-        grid.gridArray[2,3].AddUnit(2, 3, villager2);
-        */
     }
 
     public void GenerateRandomGrid (){
@@ -211,21 +198,24 @@ public class GameManager : MonoBehaviour
         Debug.Log("GenerateGrid");
 
         GameObject medForest = UnityEngine.Object.Instantiate(mediumForestPrefab,mediumForestPrefab.transform.position + new Vector3(4, 0, 8), Quaternion.identity);
-        grid.gridArray[4,8].SetFloor(medForest, 0.25f + 0.5f);
+        grid.gridArray[4,8].SetFloor(medForest, 0.75f);
         grid.pathNodes[4,8].isWalkable = true;
         grid.pathNodes[4,8].tag = mediumForestPrefab.tag;
         medForest = UnityEngine.Object.Instantiate(mediumForestPrefab,mediumForestPrefab.transform.position + new Vector3(2, 0, 5), Quaternion.identity);
-        grid.gridArray[2,5].SetFloor(medForest, 0.25f + 0.5f);
+        grid.gridArray[2,5].SetFloor(medForest, 0.75f);
         grid.pathNodes[2,5].isWalkable = true;
         grid.pathNodes[2,5].tag = mediumForestPrefab.tag;
-        GameObject medVillage = UnityEngine.Object.Instantiate(mediumVillagePrefab,mediumVillagePrefab.transform.position + new Vector3(8, 0, 5), Quaternion.identity);
-        grid.gridArray[8,5].SetFloor(medVillage, 0.25f + 0.5f);
-        grid.pathNodes[8,5].isWalkable = true;
-        grid.pathNodes[8,5].tag = mediumVillagePrefab.tag;
-        medVillage = UnityEngine.Object.Instantiate(mediumVillagePrefab,mediumVillagePrefab.transform.position + new Vector3(5, 0, 3), Quaternion.identity);
-        grid.gridArray[5,3].SetFloor(medVillage, 0.25f + 0.5f);
+        // GameObject medVillage = UnityEngine.Object.Instantiate(mediumVillagePrefab,mediumVillagePrefab.transform.position + new Vector3(8, 0, 5), Quaternion.identity);
+        // grid.gridArray[8,5].SetFloor(medVillage, 0.25f + 0.5f);
+        // grid.pathNodes[8,5].isWalkable = true;
+        // grid.pathNodes[8,5].tag = mediumVillagePrefab.tag;
+        GameObject medVillage = UnityEngine.Object.Instantiate(mediumVillagePrefab,mediumVillagePrefab.transform.position + new Vector3(5, 0, 3), Quaternion.identity);
+        grid.gridArray[5,3].SetFloor(medVillage, 0.75f);
         grid.pathNodes[5,3].isWalkable = true;
         grid.pathNodes[5,3].tag = mediumVillagePrefab.tag;
+        GameObject newUnit = UnityEngine.Object.Instantiate(unitPrefab, unitPrefab.transform.position + new Vector3(5, 0, 3), Quaternion.identity);
+        grid.gridArray[5,3].AddUnit(5, 3, newUnit);
+        units.Add(newUnit);
 
         GenerateFloorTile("medium", 5,8); 
         GenerateFloorTile("medium", 5,7); 
@@ -241,6 +231,7 @@ public class GameManager : MonoBehaviour
         GenerateFloorTile("large", 1,2);
 
 
+        GenerateFloorTile("small", 8,5);
         GenerateFloorTile("small", 3,6);
         GenerateFloorTile("small", 4,6);
         GenerateFloorTile("small", 4,3);

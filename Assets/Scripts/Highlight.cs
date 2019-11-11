@@ -5,12 +5,18 @@ using UnityEngine;
 public class Highlight : MonoBehaviour
 {
     private Color startcolor;
+    private List<ColorAndRenderer> startcolors;
     private Color currentcolor;
     private bool selected;
     public RallyPoint rallyPoint;
     public void Start()
     {
-        startcolor = gameObject.GetComponent<Renderer>().material.color;
+        startcolors = new List<ColorAndRenderer>();
+        startcolors.Add(new ColorAndRenderer(gameObject.GetComponent<Renderer>().material.color, gameObject.GetComponent<Renderer>()));
+        foreach (Transform child in transform)
+        {
+            startcolors.Add(new ColorAndRenderer(child.gameObject.GetComponent<Renderer>().material.color, child.gameObject.GetComponent<Renderer>()));
+        }
     }
     public void Select()
     {
@@ -34,15 +40,21 @@ public class Highlight : MonoBehaviour
 
     private void SetHighlight()
     {
-        Color highlight = startcolor;
-        highlight.g += 0.2f;
-        highlight.b += 0.2f;
-        gameObject.GetComponent<Renderer>().material.color = highlight;
+        foreach (ColorAndRenderer cor in startcolors)
+        {
+            Color highlight = cor.color;
+            highlight.g += 0.2f;
+            highlight.b += 0.2f;
+            cor.rend.material.color = highlight;
+        }
     }
 
     private void Unhighlight()
     {
-        gameObject.GetComponent<Renderer>().material.color = startcolor;
+        foreach (ColorAndRenderer cor in startcolors)
+        {
+            cor.rend.material.color = cor.color;
+        }
     }
 
     public void PlaceFlag(int x, float y, int z, GameObject flag)
@@ -79,6 +91,19 @@ public class Highlight : MonoBehaviour
         {
             rallyPoint.go.SetActive(true);
         }
+    }
+}
+
+
+public class ColorAndRenderer
+{
+    public Color color;
+    public Renderer rend;
+
+    public ColorAndRenderer(Color color, Renderer rend)
+    {
+        this.color = color;
+        this.rend = rend;
     }
 }
 
