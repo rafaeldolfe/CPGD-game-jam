@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
     public Camera mainCamera;
 
     //UI (menu) vars
-    public TextMeshProUGUI bridgesText;
+    public TextMeshProUGUI timerText;
     public GameObject titleScreen;
     public GameObject gameOverScreen;
     public Color titleBackgroundColor, gameBackgroundColor, bridgeBackgroundColor;
@@ -56,7 +56,7 @@ public class GameManager : MonoBehaviour
     public bool isGameActive;
 
     //private vars
-    private int bridges;
+    private int timeLeft = 50;
     private bool inBridgeMode = false; 
 
     // Start is called before the first frame update
@@ -67,6 +67,8 @@ public class GameManager : MonoBehaviour
         mainCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
         mainCamera.clearFlags = CameraClearFlags.SolidColor;
         mainCamera.backgroundColor = titleBackgroundColor;
+
+        Debug.Log("time left: " + timeLeft);
     }
 
     // Update is called once per frame
@@ -82,12 +84,11 @@ public class GameManager : MonoBehaviour
         isGameActive = true;
         mainCamera.backgroundColor = gameBackgroundColor;
 
-        bridgesText.gameObject.SetActive(true);
-        bridges = 0;
+        timerText.gameObject.SetActive(true);
         UpdateBridges(0);
 
-        float spawnRate = 0.5f / difficulty;
-        StartCoroutine(Example(spawnRate)); //do you need to do something over time? it needs to be a coroutine
+        float timeRate = 1.0f / difficulty;
+        StartCoroutine(Example(timeRate)); //do you need to do something over time? it needs to be a coroutine
 
         titleScreen.gameObject.SetActive(false);
 
@@ -98,15 +99,15 @@ public class GameManager : MonoBehaviour
 
     private void checkIfGameOver()
     {
-        if (bridges == 50) { GameOver(); }
+        if (timeLeft == 0) { GameOver(); }
     }
 
-    void UpdateBridges(int bridgesChange)
+    void UpdateBridges(int timeChange)
     {
         if (isGameActive)
         {
-            bridges += bridgesChange;
-            bridgesText.text = "Bridges: " + bridges;
+            timeLeft -= timeChange;
+            timerText.text = "Time: " + timeLeft;
         }
     }
 

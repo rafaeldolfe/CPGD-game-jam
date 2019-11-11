@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1025780442716380988}
   - component: {fileID: 1025780442716380989}
   m_Layer: 0
-  m_Name: Bridges Text
+  m_Name: Timer Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -65,7 +65,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_text: 'bridges:'
+  m_text: 'time:'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: fcd87c80ea79f2948a8fa039be694aff, type: 2}
   m_sharedMaterial: {fileID: 21321677412424788, guid: fcd87c80ea79f2948a8fa039be694aff,
@@ -143,11 +143,11 @@ MonoBehaviour:
     lineCount: 1
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 0
+  m_havePropertiesChanged: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 0
+  m_isInputParsingRequired: 1
   m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_subTextObjects:
