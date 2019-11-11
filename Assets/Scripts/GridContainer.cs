@@ -21,6 +21,7 @@ public class GridContainer
 
     public void SetFloor(GameObject unit, float height)
     {
+        
         if (floor)
         {
             GameObject.Destroy(floor);
