@@ -116,62 +116,6 @@ public class GameManager : MonoBehaviour
 
     #endregion
 
-    // void GenerateGrid() //implemented gridTest's grid generation into GameManager
-    // {
-    //     grid = new MapGrid<GridContainer>(10, 10, 1, new Vector3(0, 0, 0), (MapGrid<GridContainer> g, int x, int y) => new GridContainer(g, x, y));
-
-    //     for (int x = 0; x < grid.gridArray.GetLength(0); x++)
-    //     {
-    //         for (int y = 0; y < grid.gridArray.GetLength(1); y++)
-    //         {
-    //             grid.gridArray[x, y].AddUnit(x, y, water);
-    //         }
-    //     }
-
-    //     // grid.gridArray[4, 8].AddUnit(mediumForest);
-    //     // grid.gridArray[5, 8].AddUnit(medium);
-    //     // grid.gridArray[5, 7].AddUnit(medium);
-    //     // grid.gridArray[4, 7].AddUnit(medium);
-    //     // grid.gridArray[7, 5].AddUnit(mediumVillage);
-    //     // grid.gridArray[2, 5].AddUnit(mediumForest);
-    //     // grid.gridArray[8, 3].AddUnit(medium);
-    //     // grid.gridArray[3, 2].AddUnit(medium);
-    //     // grid.gridArray[2, 2].AddUnit(medium);
-
-    //     // grid.gridArray[6, 7].AddUnit(large);
-    //     // grid.gridArray[1, 5].AddUnit(large);
-    //     // grid.gridArray[1, 4].AddUnit(large);
-    //     // grid.gridArray[3, 3].AddUnit(large);
-
-    //     // grid.gridArray[3, 6].AddUnit(small);
-    //     // grid.gridArray[4, 6].AddUnit(small);
-    //     // grid.gridArray[4, 3].AddUnit(small);
-    //     // grid.gridArray[4, 2].AddUnit(small);
-    //     // grid.gridArray[5, 2].AddUnit(small);
-    //     // grid.gridArray[7, 3].AddUnit(small);
-
-
-    //     /*for (int x = 0; x < grid.gridArray.GetLength(0); x++)
-    //     {
-    //         for (int y = 0; y < grid.gridArray.GetLength(1); y++)
-    //         {
-    //             //randomized choice of tile prefab
-    //             int var = Random.Range(0, 1000);
-    //             if (var % 9 == 0)
-    //             {
-    //                 grid.gridArray[x,y].AddUnit(hill);
-    //             }
-    //             else if (var % 3 == 0)
-    //             {
-    //                 grid.gridArray[x,y].AddUnit(farmland);
-    //             }
-    //             else
-    //             {
-    //                 grid.gridArray[x,y].AddUnit(swamp);
-    //             }
-    //         }
-    //     }*/
-    // }
 
     void TestGenerateBridge() //implemented gridTest's grid generation into GameManager
     {
@@ -199,26 +143,66 @@ public class GameManager : MonoBehaviour
         Debug.Log("GenerateGrid");
         grid = new MapGrid<GridContainer>(10, 10, 1, new Vector3(0,0,0), (MapGrid<GridContainer> g, int x, int y) => new GridContainer(g, x, y));
 
+        //GenerateRandomGrid();
+        GenerateLevelGrid();
+
+        GameObject newUnit = UnityEngine.Object.Instantiate(unitPrefab, unitPrefab.transform.position + new Vector3(1, 0, 1), Quaternion.identity);
+        newUnit.GetComponent<MetaInformation>().init(1, 1);
+        unitPrefab.GetComponent<MoveQueue>().AddMove(new Vector3(3, grid.gridArray[3,3].height, 3));
+        grid.gridArray[1,1].AddUnit(1, 1, newUnit);
+        units.Add(newUnit);
+
+        GameObject villager1 = UnityEngine.Object.Instantiate(villager1Prefab, villager1Prefab.transform.position + new Vector3(3, 0, 2), Quaternion.identity);
+        grid.gridArray[3,2].AddUnit(3, 2, villager1);
+
+        GameObject villager2 = UnityEngine.Object.Instantiate(villager2Prefab, villager2Prefab.transform.position + new Vector3(2, 0, 3), Quaternion.identity);
+        grid.gridArray[2,3].AddUnit(2, 3, villager2);
+
+    }
+
+    public void GenerateRandomGrid (){
+    for (int x = 0; x < grid.gridArray.GetLength(0); x++)
+        {
+            for (int z = 0; z < grid.gridArray.GetLength(1); z++)
+            {
+                //randomized choice of tile prefab
+                int var = UnityEngine.Random.Range(0, 1000);
+                if (var % 9 == 0)
+                {
+                    GenerateFloorTile("large", x, z);
+                }
+                else if (var % 3 == 0)
+                {
+                    GenerateFloorTile("medium", x, z);
+                }
+                else
+                {
+                    GenerateFloorTile("small", x, z);
+                }
+            }
+        }
+    }
+
+    public void GenerateLevelGrid(){
+        
         Debug.Log("GeneratingWater");
         for (int x = 0; x < grid.gridArray.GetLength(0); x++)
         {
             for (int z = 0; z < grid.gridArray.GetLength(1); z++)
             {
-                grid.gridArray[x,z].AddUnit(x, z, waterPrefab);
+                GameObject water = UnityEngine.Object.Instantiate(waterPrefab, waterPrefab.transform.position + new Vector3(x, -0.5f, z), Quaternion.identity);
+                grid.gridArray[x,z].SetFloor(water, 0.0f);
+
             }
         }
         Debug.Log("GenerateGrid");
-
-           
-
-        GameObject mediumForest = UnityEngine.Object.Instantiate(mediumForestPrefab, mediumForestPrefab.transform.position + new Vector3(4, 0, 8), Quaternion.identity);
-        grid.gridArray[4,8].AddUnit(4, 8, mediumForest);
+        
+        /*grid.gridArray[4,8].AddUnit(4, 8, mediumForestPrefab); 
         grid.gridArray[5,8].AddUnit(5, 8, mediumPrefab);
         grid.gridArray[5,7].AddUnit(5, 7, mediumPrefab);
         grid.gridArray[4,7].AddUnit(4, 7, mediumPrefab);
-        GameObject mediumVillage = UnityEngine.Object.Instantiate(mediumVillagePrefab, mediumVillagePrefab.transform.position + new Vector3(4, 0, 8), Quaternion.identity);
-        grid.gridArray[7,5].AddUnit(7, 5, mediumVillage);
-        grid.gridArray[2,5].AddUnit(2, 5, mediumForest);
+        grid.gridArray[7,5].AddUnit(7, 5, mediumVillagePrefab);
+        grid.gridArray[2,5].AddUnit(2, 5, mediumForestPrefab);
         grid.gridArray[8,3].AddUnit(8, 3, mediumPrefab);
         grid.gridArray[3,2].AddUnit(3, 2, mediumPrefab);
         grid.gridArray[2,2].AddUnit(2, 2, mediumPrefab);
@@ -233,46 +217,49 @@ public class GameManager : MonoBehaviour
         grid.gridArray[4,3].AddUnit(4, 3, smallPrefab);
         grid.gridArray[4,2].AddUnit(4, 2, smallPrefab);
         grid.gridArray[5,2].AddUnit(5, 2, smallPrefab);
-        grid.gridArray[7,3].AddUnit(7, 3, smallPrefab);
+        grid.gridArray[7,3].AddUnit(7, 3, smallPrefab);*/
+
+        GameObject medForest = UnityEngine.Object.Instantiate(mediumForestPrefab,mediumForestPrefab.transform.position + new Vector3(4, 0, 8), Quaternion.identity);
+        grid.gridArray[4,8].SetFloor(medForest, 1.25f);
+        medForest = UnityEngine.Object.Instantiate(mediumForestPrefab,mediumForestPrefab.transform.position + new Vector3(2, 0, 5), Quaternion.identity);
+        grid.gridArray[2,5].SetFloor(medForest, 1.25f);
+        GameObject medVillage = UnityEngine.Object.Instantiate(mediumVillagePrefab,mediumVillagePrefab.transform.position + new Vector3(7, 0, 5), Quaternion.identity);
+        grid.gridArray[7,5].SetFloor(medForest, 1.25f);
+
+        GenerateFloorTile("medium", 5,8); 
+        GenerateFloorTile("medium", 5,7); 
+        GenerateFloorTile("medium", 4,7);  
+        GenerateFloorTile("medium", 8,3);
+        GenerateFloorTile("medium", 3,2);
+        GenerateFloorTile("medium", 2,2);
+
+        GenerateFloorTile("large", 6,7); 
+        GenerateFloorTile("large", 1,5); 
+        GenerateFloorTile("large", 1,4); 
+        GenerateFloorTile("large", 3,3);
+
+        GenerateFloorTile("small", 3,6);
+        GenerateFloorTile("small", 4,6);
+        GenerateFloorTile("small", 4,3);
+        GenerateFloorTile("small", 4,2);
+        GenerateFloorTile("small", 5,2);
+        GenerateFloorTile("small", 7,3); 
 
 
-        /*for (int x = 0; x < grid.gridArray.GetLength(0); x++)
-        {
-            for (int z = 0; z < grid.gridArray.GetLength(1); z++)
-            {
-                //randomized choice of tile prefab
-                int var = UnityEngine.Random.Range(0, 1000);
-                if (var % 9 == 0)
-                {
-                    GameObject large = UnityEngine.Object.Instantiate(largePrefab, largePrefab.transform.position + new Vector3(x, 0, z), Quaternion.identity);
-                    grid.gridArray[x,z].SetFloor(large, 1.5f);
-                }
-                else if (var % 3 == 0)
-                {
-                    GameObject medium = UnityEngine.Object.Instantiate(mediumPrefab, mediumPrefab.transform.position + new Vector3(x, 0, z), Quaternion.identity);
-                    grid.gridArray[x,z].SetFloor(medium, 1.25f);
-                }
-                else
-                {
-                    GameObject small = UnityEngine.Object.Instantiate(smallPrefab, smallPrefab.transform.position + new Vector3(x, 0, z), Quaternion.identity);
-                    grid.gridArray[x,z].SetFloor(small, 1.0f);
-                }
-            }
-        }*/
+    }
 
+    public void GenerateFloorTile(String size, int x, int z) {
 
-
-        GameObject newUnit = UnityEngine.Object.Instantiate(unitPrefab, unitPrefab.transform.position + new Vector3(1, 0, 1), Quaternion.identity);
-        newUnit.GetComponent<MetaInformation>().init(1, 1);
-        unitPrefab.GetComponent<MoveQueue>().AddMove(new Vector3(3, grid.gridArray[3,3].height, 3));
-        grid.gridArray[1,1].AddUnit(1, 1, newUnit);
-        units.Add(newUnit);
-
-        GameObject villager1 = UnityEngine.Object.Instantiate(villager1Prefab, villager1Prefab.transform.position + new Vector3(3, 0, 2), Quaternion.identity);
-        grid.gridArray[3,2].AddUnit(3, 2, villager1);
-
-        GameObject villager2 = UnityEngine.Object.Instantiate(villager2Prefab, villager2Prefab.transform.position + new Vector3(2, 0, 3), Quaternion.identity);
-        grid.gridArray[2,3].AddUnit(2, 3, villager2);
+        if(size == "small"){
+            GameObject small = UnityEngine.Object.Instantiate(smallPrefab, smallPrefab.transform.position + new Vector3(x, 0, z), Quaternion.identity);
+            grid.gridArray[x,z].SetFloor(small, 1.0f);
+        }else if(size == "medium"){
+            GameObject medium = UnityEngine.Object.Instantiate(mediumPrefab, mediumPrefab.transform.position + new Vector3(x, 0, z), Quaternion.identity);
+            grid.gridArray[x,z].SetFloor(medium, 1.25f);
+        }else if(size == "large"){
+            GameObject large = UnityEngine.Object.Instantiate(largePrefab, largePrefab.transform.position + new Vector3(x, 0, z), Quaternion.identity);
+            grid.gridArray[x,z].SetFloor(large, 1.5f);
+        }
     }
 
     public void MouseGridCommands()
@@ -309,20 +296,20 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        // foreach (var unit in units)
+        // foreach (var unitPrefab in units)
         // {
-        //     if(unit.GetComponent<State>().GetState() == Constants.IDLE)
+        //     if(unitPrefab.GetComponent<State>().GetState() == Constants.IDLE)
         //     {
-        //         MetaInformation mi = unit.GetComponent<MetaInformation>();
+        //         MetaInformation mi = unitPrefab.GetComponent<MetaInformation>();
         //         int movex = Random.Range(0,2);
         //         int movez = Random.Range(0,2);
         //         if (movex == 1)
         //         {
-        //             unit.GetComponent<MoveQueue>().AddMove(new Vector3(mi.x + movex, grid.gridArray[mi.x,mi.z].height, mi.z));
+        //             unitPrefab.GetComponent<MoveQueue>().AddMove(new Vector3(mi.x + movex, grid.gridArray[mi.x,mi.z].height, mi.z));
         //         }
         //         else if (movez == 1)
         //         {
-        //             unit.GetComponent<MoveQueue>().AddMove(new Vector3(mi.x, grid.gridArray[mi.x,mi.z].height, mi.z + movez));
+        //             unitPrefab.GetComponent<MoveQueue>().AddMove(new Vector3(mi.x, grid.gridArray[mi.x,mi.z].height, mi.z + movez));
         //         }
         //     }
         // }
