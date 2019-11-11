@@ -15,4 +15,9 @@ public class MoveQueue : MonoBehaviour
     {
         return q.Dequeue();
     }
+
+    public void Clear()
+    {
+        q.Clear();
+    }
 }

@@ -229,24 +229,27 @@ MonoBehaviour:
   gameOverScreen: {fileID: 1922428993}
   titleBackgroundColor: {r: 0.5019608, g: 0.5019608, b: 0.5019608, a: 0}
   gameBackgroundColor: {r: 0.501513, g: 0.9245283, b: 0.67071915, a: 0}
+  bridgeBackgroundColor: {r: 0, g: 0, b: 0, a: 0}
   smallPrefab: {fileID: 5392633345588685800, guid: 9f8d690eeaa34334fbc1b28362f2eeeb,
     type: 3}
   mediumPrefab: {fileID: 1888997304066154816, guid: 5e4d2d3460c56ac4e93075b784b6d200,
     type: 3}
   largePrefab: {fileID: 1181195752831844359, guid: 4cc993d257604c345ba4c17fa22dc1cc,
     type: 3}
-  unit: {fileID: 3456065453680784595, guid: 7ae909ae3c4b5f046819d554eaf5e2e2, type: 3}
+  unitPrefab: {fileID: 3456065453680784595, guid: 7ae909ae3c4b5f046819d554eaf5e2e2,
+    type: 3}
   flagPrefab: {fileID: 1565478635429830531, guid: d49fd3b1dd5ca594f9fbc7be7a928b3a,
     type: 3}
   villager1Prefab: {fileID: 9015216969572734420, guid: 0a4bc3fd63c2b0a4baa6a4c2d510126d,
     type: 3}
   villager2Prefab: {fileID: 3681121118072907097, guid: a0ba2ccee53c186438d520276c18fd13,
     type: 3}
-  mediumVillage: {fileID: 4478584081690314797, guid: 54649cf324aa123449a62f6625555ef9,
+  mediumVillagePrefab: {fileID: 4478584081690314797, guid: 54649cf324aa123449a62f6625555ef9,
     type: 3}
-  mediumForest: {fileID: 6604530842377122371, guid: fe7ec277763c43743ac09ff674ed0b0e,
+  mediumForestPrefab: {fileID: 6604530842377122371, guid: fe7ec277763c43743ac09ff674ed0b0e,
     type: 3}
-  water: {fileID: 7294360027076636351, guid: 6f3f0d34a30a0fb478e28b57c7a71f7c, type: 3}
+  waterPrefab: {fileID: 7294360027076636351, guid: 6f3f0d34a30a0fb478e28b57c7a71f7c,
+    type: 3}
   units: []
   bridgeE1_Left: {fileID: 6540894939673018030, guid: a6a758a2efa9e6d4e88204a8d9b95581,
     type: 3}
@@ -274,6 +277,7 @@ MonoBehaviour:
     type: 3}
   bridgeE1_y: 0.1875
   bridgeE2_y: 0.4375
+  bridgeE3_y: 0.9375
   isGameActive: 0
 --- !u!4 &972558199
 Transform:

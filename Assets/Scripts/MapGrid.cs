@@ -24,6 +24,7 @@ public class MapGrid<TGridObject>
     private Vector3 originPosition;
 
     public TGridObject[,] gridArray;
+    public PathNode[,] pathNodes;
 
     public MapGrid(int width, int height, float cellSize, Vector3 originPosition, Func<MapGrid<TGridObject>, int, int, TGridObject> initObject)
     {
@@ -33,12 +34,14 @@ public class MapGrid<TGridObject>
         this.originPosition = originPosition;
 
         gridArray = new TGridObject[width, height];
+        pathNodes = new PathNode[width, height];
 
         for (int x = 0; x < gridArray.GetLength(0); x++)
         {
-            for (int y = 0; y < gridArray.GetLength(1); y++)
+            for (int z = 0; z < gridArray.GetLength(1); z++)
             {
-                gridArray[x, y] = initObject(this, x, y);
+                gridArray[x, z] = initObject(this, x, z);
+                pathNodes[x, z] = new PathNode(pathNodes, x, z);
             }
         }
 
@@ -71,6 +74,25 @@ public class MapGrid<TGridObject>
         z = Mathf.FloorToInt((newWorldPosition - originPosition).z / cellSize);
     }
 
+    public PathNode GetGridNode(int x, int y)
+    {
+        if (x >= 0 && y >= 0 && x < width && y < height)
+        {
+            return pathNodes[x, y];
+        }
+        else
+        {
+            return default(PathNode);
+        }
+    }
+
+    public PathNode GetGridNode(Vector3 worldPosition)
+    {
+        int x, y;
+        GetXY(worldPosition, out x, out y);
+        return GetGridNode(x, y);
+    }
+
     public TGridObject GetValue(int x, int y)
     {
         if (x >= 0 && y >= 0 && x < width && y < height)
@@ -88,5 +110,15 @@ public class MapGrid<TGridObject>
         int x, y;
         GetXY(worldPosition, out x, out y);
         return GetValue(x, y);
+    }
+
+    public int GetWidth()
+    {
+        return width;
+    }
+
+    public int GetHeight()
+    {
+        return height;
     }
 }
