@@ -55,7 +55,8 @@ public class GameManager : MonoBehaviour
     public bool isGameActive;
 
     //private vars
-    private int bridges;
+    private int timeUnit;
+    private int numBridges = 0; 
     private bool inBridgeMode = false; 
 
     // Start is called before the first frame update
@@ -80,31 +81,39 @@ public class GameManager : MonoBehaviour
         mainCamera.backgroundColor = gameBackgroundColor;
 
         bridgesText.gameObject.SetActive(true);
-        bridges = 0;
+        timeUnit = 0;
         UpdateBridges(0);
 
         float spawnRate = 0.5f / difficulty;
         StartCoroutine(Example(spawnRate)); //do you need to do something over time? it needs to be a coroutine
 
+        if(difficulty == 1 ){
+            numBridges = 4;
+        }else if (difficulty == 2){
+            numBridges = 3;
+        }else if (difficulty ==3){
+            numBridges = 2;
+        }
+
         titleScreen.gameObject.SetActive(false);
 
         GenerateGrid();
-        TestGenerateBridge();
+       // TestGenerateBridge();
     }
 
     #region Update Game (example): gain 1 bridge every 1 or 1/2 or 1/3 sec (difficulty determines this), game over at 10 bridges
 
     private void checkIfGameOver()
     {
-        if (bridges == 50) { GameOver(); }
+        if (timeUnit == 50) { GameOver(); }
     }
 
     void UpdateBridges(int bridgesChange)
     {
         if (isGameActive)
         {
-            bridges += bridgesChange;
-            bridgesText.text = "Bridges: " + bridges;
+            timeUnit += bridgesChange;
+            bridgesText.text = "Bridges: " + timeUnit;
         }
     }
 
@@ -265,6 +274,25 @@ public class GameManager : MonoBehaviour
                 GameObject objectHit = hit.transform.gameObject;
                 
                 SelectBridgeTile(objectHit);
+
+            }
+        }
+        if (Input.GetMouseButtonDown(1)) // right click
+        {
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        
+            if (Physics.Raycast(ray, out hit)) 
+            {
+                GameObject objectHit = hit.transform.gameObject;
+                
+                int x;
+                int z;
+                grid.GetXY(objectHit.transform.position, out x, out z);
+                if (grid.gridArray[x,z].RemoveBridge()) { 
+                    numBridges += 2; 
+                }
+               // DeleteBridgeTile(objectHit);
             }
         }
     }
@@ -367,14 +395,12 @@ public class GameManager : MonoBehaviour
         int dstX, dstZ; 
         grid.GetXY(src.transform.position, out srcX, out srcZ); 
         grid.GetXY(dst.transform.position, out dstX, out dstZ); 
-        Debug.Log(src.tag); 
-        Debug.Log("source position: " + srcX + ", " + srcZ);
+
         if(src.tag != dst.tag || !(srcX==dstX || srcZ==dstZ)){
             Debug.Log("Can't place bridge"); 
             selectedBridgeTile = null; 
             return; 
         }
-
         int bridgeX, bridgeZ; 
         if(srcX == dstX && Math.Abs(srcZ-dstZ) == 2){
             bridgeX = srcX;
@@ -402,9 +428,14 @@ public class GameManager : MonoBehaviour
             selectedBridgeTile = null; 
             return; 
         }
+            numBridges -= 1; 
            GameObject bridge = UnityEngine.Object.Instantiate(bridgeE1_Left, new Vector3(bridgeX, bridgeHeight, bridgeZ), Quaternion.identity);
            grid.gridArray[bridgeX,bridgeZ].AddUnit(bridgeX, bridgeZ, bridge); 
     }
+
+    /*public void DeleteBridgeTile(GameObject tile){
+        tile.ge
+    }*/
 
     public static Vector3 GetMouseWorldPosition() 
     {
