@@ -10,7 +10,6 @@ public class GameManager : MonoBehaviour
     public Camera mainCamera;
 
     //UI (menu) vars
-    public TextMeshProUGUI timerText;
     public GameObject titleScreen;
     public GameObject gameOverScreen;
     public Color titleBackgroundColor, gameBackgroundColor, bridgeBackgroundColor;
@@ -30,10 +29,15 @@ public class GameManager : MonoBehaviour
     public GameObject waterPrefab; 
     public List<GameObject> units = new List<GameObject>();
     private GameObject selected;
-    private GameObject selectedBridgeTile; 
+    private GameObject selectedBridgeTile;
     #endregion
 
     //UI (gameplay) vars
+    public TextMeshProUGUI timerText;
+    public TextMeshProUGUI bridgeText;
+    public TextMeshProUGUI resourcesText;
+
+    //UI (gameplay) prefabs
     public GameObject bridgeE1_Left;
     public GameObject bridgeE1_Right;
     public GameObject bridgeE1Corner_Down;
@@ -56,7 +60,9 @@ public class GameManager : MonoBehaviour
     public bool isGameActive;
 
     //private vars
-    private int timeLeft = 50;
+    private int timeLeft = 50; //this needs to be non-zero for checkIfGameOver(); while in menus
+    private int bridges = 3;
+    private int resources = 0;
     private bool inBridgeMode = false; 
 
     // Start is called before the first frame update
@@ -84,11 +90,22 @@ public class GameManager : MonoBehaviour
         isGameActive = true;
         mainCamera.backgroundColor = gameBackgroundColor;
 
+        //set initial time
+        timeLeft = 60 - (10 * difficulty);
+        timerText.text = "Time: " + timeLeft;
         timerText.gameObject.SetActive(true);
-        UpdateBridges(0);
+        UpdateTime(0);
 
-        float timeRate = 1.0f / difficulty;
+        float timeRate = 1.0f;
         StartCoroutine(Example(timeRate)); //do you need to do something over time? it needs to be a coroutine
+
+        //set intial bridges
+        bridgeText.text = "Bridges: " + bridges;
+        bridgeText.gameObject.SetActive(true);
+
+        //set initial resources
+        resourcesText.text = "Resources: " + resources;
+        resourcesText.gameObject.SetActive(true);
 
         titleScreen.gameObject.SetActive(false);
 
@@ -102,7 +119,7 @@ public class GameManager : MonoBehaviour
         if (timeLeft == 0) { GameOver(); }
     }
 
-    void UpdateBridges(int timeChange)
+    void UpdateTime(int timeChange)
     {
         if (isGameActive)
         {
@@ -111,12 +128,39 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    void GainBridge()
+    {
+        if (isGameActive)
+        {
+            bridges += 1;
+            bridgeText.text = "Bridges: " + bridges;
+        }
+    }
+
+    void LoseBridge()
+    {
+        if (isGameActive)
+        {
+            bridges -= 1;
+            bridgeText.text = "Bridges: " + bridges;
+        }
+    }
+
+    void UpdateResources(int resourcesChange)
+    {
+        if (isGameActive)
+        {
+            resources += resourcesChange;
+            resourcesText.text = "Resources: " + resources;
+        }
+    }
+
     IEnumerator Example(float spawnRate)
     {
         while (isGameActive)
         {
             yield return new WaitForSeconds(spawnRate);
-            UpdateBridges(1);
+            UpdateTime(1);
             if (!isGameActive) { break; }
         }
     }
