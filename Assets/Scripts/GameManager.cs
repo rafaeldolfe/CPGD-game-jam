@@ -10,7 +10,6 @@ public class GameManager : MonoBehaviour
     public Camera mainCamera;
 
     //UI (menu) vars
-    public TextMeshProUGUI bridgesText;
     public GameObject titleScreen;
     public GameObject gameOverScreen;
     public Color titleBackgroundColor, gameBackgroundColor, bridgeBackgroundColor;
@@ -36,6 +35,11 @@ public class GameManager : MonoBehaviour
     #endregion
 
     //UI (gameplay) vars
+    public TextMeshProUGUI timerText;
+    public TextMeshProUGUI bridgeText;
+    public TextMeshProUGUI resourcesText;
+
+    //UI (gameplay) prefabs
     public GameObject bridgeE1_Left;
     public GameObject bridgeE1_Right;
     public GameObject bridgeE1Corner_Down;
@@ -58,8 +62,10 @@ public class GameManager : MonoBehaviour
     public bool isGameActive;
 
     //private vars
-    private int bridges;
-    private bool inBridgeMode = false;
+    private int timeLeft = 50; //this needs to be non-zero for checkIfGameOver(); while in menus
+    private int bridges = 3;
+    private int resources = 0;
+    private bool inBridgeMode = false; 
 
     // Start is called before the first frame update
     void Start()
@@ -69,6 +75,8 @@ public class GameManager : MonoBehaviour
         mainCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
         mainCamera.clearFlags = CameraClearFlags.SolidColor;
         mainCamera.backgroundColor = titleBackgroundColor;
+
+        Debug.Log("time left: " + timeLeft);
     }
 
     // Update is called once per frame
@@ -84,12 +92,22 @@ public class GameManager : MonoBehaviour
         isGameActive = true;
         mainCamera.backgroundColor = gameBackgroundColor;
 
-        bridgesText.gameObject.SetActive(true);
-        bridges = 0;
-        UpdateBridges(0);
+        //set initial time
+        timeLeft = 60 - (10 * difficulty);
+        timerText.text = "Time: " + timeLeft;
+        timerText.gameObject.SetActive(true);
+        UpdateTime(0);
 
-        float spawnRate = 0.5f / difficulty;
-        StartCoroutine(Example(spawnRate)); //do you need to do something over time? it needs to be a coroutine
+        float timeRate = 1.0f;
+        StartCoroutine(Example(timeRate)); //do you need to do something over time? it needs to be a coroutine
+
+        //set intial bridges
+        bridgeText.text = "Bridges: " + bridges;
+        bridgeText.gameObject.SetActive(true);
+
+        //set initial resources
+        resourcesText.text = "Resources: " + resources;
+        resourcesText.gameObject.SetActive(true);
 
         titleScreen.gameObject.SetActive(false);
 
@@ -100,15 +118,42 @@ public class GameManager : MonoBehaviour
 
     private void checkIfGameOver()
     {
-        if (bridges == 50) { GameOver(); }
+        if (timeLeft == 0) { GameOver(); }
     }
 
-    void UpdateBridges(int bridgesChange)
+    void UpdateTime(int timeChange)
     {
         if (isGameActive)
         {
-            bridges += bridgesChange;
-            bridgesText.text = "Bridges: " + bridges;
+            timeLeft -= timeChange;
+            timerText.text = "Time: " + timeLeft;
+        }
+    }
+
+    void GainBridge()
+    {
+        if (isGameActive)
+        {
+            bridges += 1;
+            bridgeText.text = "Bridges: " + bridges;
+        }
+    }
+
+    void LoseBridge()
+    {
+        if (isGameActive)
+        {
+            bridges -= 1;
+            bridgeText.text = "Bridges: " + bridges;
+        }
+    }
+
+    void UpdateResources(int resourcesChange)
+    {
+        if (isGameActive)
+        {
+            resources += resourcesChange;
+            resourcesText.text = "Resources: " + resources;
         }
     }
 
@@ -117,7 +162,7 @@ public class GameManager : MonoBehaviour
         while (isGameActive)
         {
             yield return new WaitForSeconds(spawnRate);
-            UpdateBridges(1);
+            UpdateTime(1);
             if (!isGameActive) { break; }
         }
     }
