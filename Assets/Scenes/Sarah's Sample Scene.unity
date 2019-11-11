@@ -253,14 +253,27 @@ MonoBehaviour:
   gameOverScreen: {fileID: 333069967}
   titleBackgroundColor: {r: 0.5019608, g: 0.5019608, b: 0.5019608, a: 0}
   gameBackgroundColor: {r: 0.501513, g: 0.9245283, b: 0.67071915, a: 0}
-  small: {fileID: 5392633345588685800, guid: 9f8d690eeaa34334fbc1b28362f2eeeb, type: 3}
-  medium: {fileID: 1888997304066154816, guid: 5e4d2d3460c56ac4e93075b784b6d200, type: 3}
-  large: {fileID: 1181195752831844359, guid: 4cc993d257604c345ba4c17fa22dc1cc, type: 3}
-  mediumVillage: {fileID: 4478584081690314797, guid: 54649cf324aa123449a62f6625555ef9,
+  smallPrefab: {fileID: 5392633345588685800, guid: 9f8d690eeaa34334fbc1b28362f2eeeb,
     type: 3}
-  mediumForest: {fileID: 6604530842377122371, guid: fe7ec277763c43743ac09ff674ed0b0e,
+  mediumPrefab: {fileID: 1888997304066154816, guid: 5e4d2d3460c56ac4e93075b784b6d200,
     type: 3}
-  water: {fileID: 7294360027076636351, guid: 6f3f0d34a30a0fb478e28b57c7a71f7c, type: 3}
+  largePrefab: {fileID: 1181195752831844359, guid: 4cc993d257604c345ba4c17fa22dc1cc,
+    type: 3}
+  unitPrefab: {fileID: 3456065453680784595, guid: 7ae909ae3c4b5f046819d554eaf5e2e2,
+    type: 3}
+  flagPrefab: {fileID: 1565478635429830531, guid: d49fd3b1dd5ca594f9fbc7be7a928b3a,
+    type: 3}
+  villager1Prefab: {fileID: 9015216969572734420, guid: 0a4bc3fd63c2b0a4baa6a4c2d510126d,
+    type: 3}
+  villager2Prefab: {fileID: 3681121118072907097, guid: a0ba2ccee53c186438d520276c18fd13,
+    type: 3}
+  mediumVillagePrefab: {fileID: 4478584081690314797, guid: 54649cf324aa123449a62f6625555ef9,
+    type: 3}
+  mediumForestPrefab: {fileID: 6604530842377122371, guid: fe7ec277763c43743ac09ff674ed0b0e,
+    type: 3}
+  waterPrefab: {fileID: 7294360027076636351, guid: 6f3f0d34a30a0fb478e28b57c7a71f7c,
+    type: 3}
+  units: []
   bridgeE1_Left: {fileID: 6540894939673018030, guid: a6a758a2efa9e6d4e88204a8d9b95581,
     type: 3}
   bridgeE1_Right: {fileID: 6147341881977545817, guid: 6e4867a0694c17e4da9a128b4111d6b9,
@@ -444,6 +457,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3120274170936612960, guid: 20a35a7b63444eb4f90729b44a9c9ac3,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2404596782969829648, guid: 20a35a7b63444eb4f90729b44a9c9ac3,
         type: 3}
       propertyPath: m_Name
@@ -583,11 +601,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_isInputParsingRequired
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3120274170936612960, guid: 20a35a7b63444eb4f90729b44a9c9ac3,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3120274171020784455, guid: 20a35a7b63444eb4f90729b44a9c9ac3,
         type: 3}
