@@ -11,6 +11,8 @@ public class Village : MonoBehaviour
     public MetaInformation mi;
 
     public bool holdingResource = false;
+    public int treeResX;
+    public int treeResZ;
 
     public void Start()
     {
@@ -18,6 +20,29 @@ public class Village : MonoBehaviour
     }
     public void Update()
     {
+        
+        Debug.Log("debuging...");
+
+        if (villager.GetComponent<MetaInformation>().x == mi.x && villager.GetComponent<MetaInformation>().z == mi.z)
+        {
+            if (holdingResource)
+            {
+                gm.UpdateResources(1);
+                gm.RemoveTree(treeResX, treeResZ);
+                holdingResource = false;
+            }
+        }
+
+        foreach (GameObject tree in trees)
+        {
+            MetaInformation treeMI = tree.GetComponent<MetaInformation>();
+
+            if (villager.GetComponent<MetaInformation>().x == treeMI.x && villager.GetComponent<MetaInformation>().z == treeMI.z)
+            {
+                holdingResource = true;
+            }
+        }
+
         // List<List<PathNode>> paths;
         // foreach (GameObject tree in trees)
         // {
@@ -52,14 +77,14 @@ public class Village : MonoBehaviour
         //         {
         //             gm.UpdateResources(1);
         //             holdingResource = false;
-        // //         }
+        //         }
 
-        // //         if (minPath != null)
-        // //         {
-        // //             villager.GetComponent<Highlight>().PlaceFlag(treeMI2.x, mi.grid.gridArray[treeMI2.x, treeMI2.z].height, treeMI2.z, mi.flagPrefab);
-        // //         }
-        // //     }
-        // // }
+        //         if (minPath != null)
+        //         {
+        //             villager.GetComponent<Highlight>().PlaceFlag(treeMI2.x, mi.grid.gridArray[treeMI2.x, treeMI2.z].height, treeMI2.z, mi.flagPrefab);
+        //         }
+        //     }
+        // }
 
 
 
