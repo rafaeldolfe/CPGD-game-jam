@@ -92,7 +92,6 @@ public class GameManager : MonoBehaviour
         titleScreen.gameObject.SetActive(false);
 
         GenerateGrid();
-        TestGenerateBridge();
     }
 
     #region Update Game (example): gain 1 bridge every 1 or 1/2 or 1/3 sec (difficulty determines this), game over at 10 bridges
@@ -197,6 +196,7 @@ public class GameManager : MonoBehaviour
                 GameObject water = UnityEngine.Object.Instantiate(waterPrefab, waterPrefab.transform.position + new Vector3(x, -0.5f, z), Quaternion.identity);
                 grid.gridArray[x,z].SetFloor(water, 0.0f);
                 grid.pathNodes[x,z].isWalkable = false;
+                grid.pathNodes[x,z].tag = "E0";
             }
         }
 
@@ -211,11 +211,21 @@ public class GameManager : MonoBehaviour
         Debug.Log("GenerateGrid");
 
         GameObject medForest = UnityEngine.Object.Instantiate(mediumForestPrefab,mediumForestPrefab.transform.position + new Vector3(4, 0, 8), Quaternion.identity);
-        grid.gridArray[4,8].SetFloor(medForest, 1.25f);
+        grid.gridArray[4,8].SetFloor(medForest, 0.25f + 0.5f);
+        grid.pathNodes[4,8].isWalkable = true;
+        grid.pathNodes[4,8].tag = mediumForestPrefab.tag;
         medForest = UnityEngine.Object.Instantiate(mediumForestPrefab,mediumForestPrefab.transform.position + new Vector3(2, 0, 5), Quaternion.identity);
-        grid.gridArray[2,5].SetFloor(medForest, 1.25f);
+        grid.gridArray[2,5].SetFloor(medForest, 0.25f + 0.5f);
+        grid.pathNodes[2,5].isWalkable = true;
+        grid.pathNodes[2,5].tag = mediumForestPrefab.tag;
         GameObject medVillage = UnityEngine.Object.Instantiate(mediumVillagePrefab,mediumVillagePrefab.transform.position + new Vector3(8, 0, 5), Quaternion.identity);
-        grid.gridArray[8,5].SetFloor(medForest, 1.25f);
+        grid.gridArray[8,5].SetFloor(medVillage, 0.25f + 0.5f);
+        grid.pathNodes[8,5].isWalkable = true;
+        grid.pathNodes[8,5].tag = mediumVillagePrefab.tag;
+        medVillage = UnityEngine.Object.Instantiate(mediumVillagePrefab,mediumVillagePrefab.transform.position + new Vector3(5, 0, 3), Quaternion.identity);
+        grid.gridArray[5,3].SetFloor(medVillage, 0.25f + 0.5f);
+        grid.pathNodes[5,3].isWalkable = true;
+        grid.pathNodes[5,3].tag = mediumVillagePrefab.tag;
 
         GenerateFloorTile("medium", 5,8); 
         GenerateFloorTile("medium", 5,7); 
@@ -246,14 +256,17 @@ public class GameManager : MonoBehaviour
             GameObject small = UnityEngine.Object.Instantiate(smallPrefab, smallPrefab.transform.position + new Vector3(x, 0, z), Quaternion.identity);
             grid.gridArray[x,z].SetFloor(small, -0.25f + 0.5f);
             grid.pathNodes[x,z].isWalkable = true;
+            grid.pathNodes[x,z].tag = smallPrefab.tag;
         }else if(size == "medium"){
             GameObject medium = UnityEngine.Object.Instantiate(mediumPrefab, mediumPrefab.transform.position + new Vector3(x, 0, z), Quaternion.identity);
             grid.gridArray[x,z].SetFloor(medium, 0.25f + 0.5f);
             grid.pathNodes[x,z].isWalkable = true;
+            grid.pathNodes[x,z].tag = mediumPrefab.tag;
         }else if(size == "large"){
             GameObject large = UnityEngine.Object.Instantiate(largePrefab, largePrefab.transform.position + new Vector3(x, 0, z), Quaternion.identity);
             grid.gridArray[x,z].SetFloor(large, 0.75f + 0.5f);
             grid.pathNodes[x,z].isWalkable = true;
+            grid.pathNodes[x,z].tag = largePrefab.tag;
         }
     }
 
@@ -317,7 +330,7 @@ public class GameManager : MonoBehaviour
                     {
                         if (pf.FindPath(mi.x, mi.z, x, z) != null)
                         {
-                            selected.GetComponent<Highlight>().PlaceFlag(x, z, flagPrefab);
+                            selected.GetComponent<Highlight>().PlaceFlag(x, grid.gridArray[x,z].height, z, flagPrefab);
                         }
                     }
                 }
@@ -439,10 +452,13 @@ public class GameManager : MonoBehaviour
         float bridgeHeight; 
         if(src.tag == "E1"){
            bridgeHeight = bridgeE1_y; 
+           grid.gridArray[bridgeX, bridgeZ].height = 0.25f;
         } else if(src.tag == "E2"){
             bridgeHeight = bridgeE2_y; 
+            grid.gridArray[bridgeX, bridgeZ].height = 0.75f;
         } else if(src.tag == "E3"){
             bridgeHeight = bridgeE3_y;
+            grid.gridArray[bridgeX, bridgeZ].height = 1.25f;
         } else {
             Debug.Log("Can't place bridge"); 
             selectedBridgeTile = null; 
@@ -450,6 +466,9 @@ public class GameManager : MonoBehaviour
         }
            GameObject bridge = UnityEngine.Object.Instantiate(bridgeE1_Left, new Vector3(bridgeX, bridgeHeight, bridgeZ), Quaternion.identity);
            grid.gridArray[bridgeX,bridgeZ].AddUnit(bridgeX, bridgeZ, bridge); 
+           // Make node now walkable too, also the height will depend on the bridge type
+           grid.pathNodes[bridgeX, bridgeZ].isWalkable = true;
+           grid.pathNodes[bridgeX, bridgeZ].tag = src.tag;
     }
 
     public static Vector3 GetMouseWorldPosition() 

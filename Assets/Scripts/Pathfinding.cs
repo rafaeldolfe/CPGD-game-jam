@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public class Pathfinding
@@ -53,10 +54,16 @@ public class Pathfinding
 
     private List<PathNode> GetNeighbourList(PathNode currentNode) {
         List<PathNode> neighbourList = new List<PathNode>();
+        int level = Int32.Parse(currentNode.tag.Substring(1));
 
         if (currentNode.x - 1 >= 0) {
             // Left
-            neighbourList.Add(GetNode(currentNode.x - 1, currentNode.z));
+            PathNode leftNode = GetNode(currentNode.x - 1, currentNode.z);
+            int neighbourLevel = Int32.Parse(leftNode.tag.Substring(1));
+            if (Math.Abs(neighbourLevel - level) < 2)
+            {
+                neighbourList.Add(leftNode);
+            }
             // Left Down
             //if (currentNode.z - 1 >= 0) neighbourList.Add(GetNode(currentNode.x - 1, currentNode.z - 1));
             // Left Up
@@ -64,16 +71,39 @@ public class Pathfinding
         }
         if (currentNode.x + 1 < grid.GetWidth()) {
             // Right
-            neighbourList.Add(GetNode(currentNode.x + 1, currentNode.z));
+            PathNode rightNode = GetNode(currentNode.x + 1, currentNode.z);
+            int neighbourLevel = Int32.Parse(rightNode.tag.Substring(1));
+            if (Math.Abs(neighbourLevel - level) < 2)
+            {
+                neighbourList.Add(rightNode);
+            }
             // Right Down
             //if (currentNode.z - 1 >= 0) neighbourList.Add(GetNode(currentNode.x + 1, currentNode.z - 1));
             // Right Up
             //if (currentNode.z + 1 < grid.GetHeight()) neighbourList.Add(GetNode(currentNode.x + 1, currentNode.z + 1));
         }
         // Down
-        if (currentNode.z - 1 >= 0) neighbourList.Add(GetNode(currentNode.x, currentNode.z - 1));
+        
+        if (currentNode.z - 1 >= 0)
+        {
+            PathNode downNode = GetNode(currentNode.x, currentNode.z - 1);
+            int neighbourLevel = Int32.Parse(downNode.tag.Substring(1));
+            if (Math.Abs(neighbourLevel - level) < 2)
+            {
+                neighbourList.Add(downNode);
+            }
+        }   
         // Up
-        if (currentNode.z + 1 < grid.GetHeight()) neighbourList.Add(GetNode(currentNode.x, currentNode.z + 1));
+        if (currentNode.z + 1 < grid.GetHeight())
+        {
+            PathNode upNode = GetNode(currentNode.x, currentNode.z + 1);
+            int neighbourLevel = Int32.Parse(upNode.tag.Substring(1));
+            if (Math.Abs(neighbourLevel - level) < 2)
+            {
+                neighbourList.Add(upNode);
+            }
+        }
+        
 
         return neighbourList;
     }
