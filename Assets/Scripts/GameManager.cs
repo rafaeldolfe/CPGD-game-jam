@@ -310,6 +310,7 @@ public class GameManager : MonoBehaviour
                 {
                     Debug.Log(selected);
                     selected.GetComponent<Highlight>().PlaceFlag(x, z, flagPrefab);
+                    selected.GetComponent<Pathfinding>().GoTo(x,z);
                 }
             }
         }
