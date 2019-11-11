@@ -6,5 +6,4 @@ public class Constants : MonoBehaviour
 {
     public const int IDLE = 0;
     public const int BUSY = 1;
-
 }

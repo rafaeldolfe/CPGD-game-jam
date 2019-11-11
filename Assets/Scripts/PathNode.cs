@@ -7,12 +7,11 @@ public class PathNode
     private PathNode[,] grid;
     public int x;
     public int z;
-
     public int gCost;
     public int hCost;
     public int fCost;
-
     public bool isWalkable;
+    public string tag;
     public PathNode cameFromNode;
 
     public PathNode(PathNode[,] grid, int x, int z) {

@@ -45,14 +45,18 @@ public class Highlight : MonoBehaviour
         gameObject.GetComponent<Renderer>().material.color = startcolor;
     }
 
-    public void PlaceFlag(int x, int z, GameObject flag)
+    public void PlaceFlag(int x, float y, int z, GameObject flag)
     {
         if (rallyPoint != null)
         {
             Destroy(rallyPoint.go);
         }
 
+<<<<<<< HEAD
         GameObject clone = UnityEngine.Object.Instantiate(flag, flag.transform.position + new Vector3(x, 0, z), flag.transform.rotation);
+=======
+        GameObject clone = UnityEngine.Object.Instantiate(flag, flag.transform.position + new Vector3(x, y, z), Quaternion.identity);
+>>>>>>> eee5841dfb7c6da07ff1eccb17d3dbf58ed44099
         RallyPoint flagObj = new RallyPoint(clone, x, z);
         rallyPoint = flagObj;
     }
