@@ -102,6 +102,14 @@ public class GameManager : MonoBehaviour
         float timeRate = 1.0f;
         StartCoroutine(Example(timeRate)); //do you need to do something over time? it needs to be a coroutine
 
+        if(difficulty == 1 ){
+            numBridges = 4;
+        }else if (difficulty == 2){
+            numBridges = 3;
+        }else if (difficulty ==3){
+            numBridges = 2;
+        }
+
         //set intial bridges
         bridgeText.text = "Bridges: " + numBridges;
         bridgeText.gameObject.SetActive(true);
@@ -110,13 +118,7 @@ public class GameManager : MonoBehaviour
         resourcesText.text = "Resources: " + resources;
         resourcesText.gameObject.SetActive(true);
 
-        if(difficulty == 1 ){
-            numBridges = 4;
-        }else if (difficulty == 2){
-            numBridges = 3;
-        }else if (difficulty ==3){
-            numBridges = 2;
-        }
+
 
         titleScreen.gameObject.SetActive(false);
 
@@ -255,7 +257,7 @@ public class GameManager : MonoBehaviour
         }
         Debug.Log("GenerateGrid");
 
-        GameObject medForest = UnityEngine.Object.Instantiate(mediumForestPrefab, mediumForestPrefab.transform.position + new Vector3(4, 0, 8), Quaternion.identity);
+        /*GameObject medForest = UnityEngine.Object.Instantiate(mediumForestPrefab, mediumForestPrefab.transform.position + new Vector3(4, 0, 8), Quaternion.identity);
         grid.gridArray[4, 8].SetFloor(medForest, 0.75f);
         grid.pathNodes[4, 8].isWalkable = true;
         grid.pathNodes[4, 8].tag = mediumForestPrefab.tag;
@@ -285,12 +287,11 @@ public class GameManager : MonoBehaviour
         village.GetComponent<Village>().trees = trees;
         village.GetComponent<Village>().villager = villager;
         village.GetComponent<Village>().pf = this.pf;
-        Debug.Log("did they get set?");
         Debug.Log(village.GetComponent<Village>().trees);
         Debug.Log(village.GetComponent<Village>().villager);
 
 
-        GenerateFloorTile("medium", 5, 8);
+        /*GenerateFloorTile("medium", 5, 8);
         GenerateFloorTile("medium", 5, 7);
         GenerateFloorTile("medium", 4, 7);
         GenerateFloorTile("medium", 8, 3);
@@ -311,8 +312,88 @@ public class GameManager : MonoBehaviour
         GenerateFloorTile("small", 4, 2);
         GenerateFloorTile("small", 5, 2);
         GenerateFloorTile("small", 7, 3);
+        GenerateFloorTile("small", 7, 2);*/
+
+        GameObject medForest = UnityEngine.Object.Instantiate(mediumForestPrefab, mediumForestPrefab.transform.position + new Vector3(4, 0, 8), Quaternion.identity);
+        grid.gridArray[4, 8].SetFloor(medForest, 0.75f);
+        grid.pathNodes[4, 8].isWalkable = true;
+        grid.pathNodes[4, 8].tag = mediumForestPrefab.tag;
+        medForest = UnityEngine.Object.Instantiate(mediumForestPrefab, mediumForestPrefab.transform.position + new Vector3(2, 0, 5), Quaternion.identity);
+        grid.gridArray[2, 5].SetFloor(medForest, 0.75f);
+        grid.pathNodes[2, 5].isWalkable = true;
+        grid.pathNodes[2, 5].tag = mediumForestPrefab.tag;
+        medForest = UnityEngine.Object.Instantiate(mediumForestPrefab, mediumForestPrefab.transform.position + new Vector3(4, 0, 1), Quaternion.identity);
+        grid.gridArray[4, 1].SetFloor(medForest, 0.75f);
+        grid.pathNodes[4, 1].isWalkable = true;
+        grid.pathNodes[4, 1].tag = mediumForestPrefab.tag;
+        medForest = UnityEngine.Object.Instantiate(mediumForestPrefab, mediumForestPrefab.transform.position + new Vector3(8, 0, 1), Quaternion.identity);
+        grid.gridArray[8, 1].SetFloor(medForest, 0.75f);
+        grid.pathNodes[8, 1].isWalkable = true;
+        grid.pathNodes[8, 1].tag = mediumForestPrefab.tag;
+        medForest = UnityEngine.Object.Instantiate(mediumForestPrefab, mediumForestPrefab.transform.position + new Vector3(1, 0, 8), Quaternion.identity);
+        grid.gridArray[1, 8].SetFloor(medForest, 0.75f);
+        grid.pathNodes[1, 8].isWalkable = true;
+        grid.pathNodes[1, 8].tag = mediumForestPrefab.tag;
+        // GameObject medVillage = UnityEngine.Object.Instantiate(mediumVillagePrefab,mediumVillagePrefab.transform.position + new Vector3(8, 0, 5), Quaternion.identity);
+        // grid.gridArray[8,5].SetFloor(medVillage, 0.25f + 0.5f);
+        // grid.pathNodes[8,5].isWalkable = true;
+        // grid.pathNodes[8,5].tag = mediumVillagePrefab.tag;
+        GameObject medVillage = UnityEngine.Object.Instantiate(mediumVillagePrefab, mediumVillagePrefab.transform.position + new Vector3(5, 0, 3), Quaternion.identity);
+        grid.gridArray[5, 3].SetFloor(medVillage, 0.75f);
+        grid.pathNodes[5, 3].isWalkable = true;
+        grid.pathNodes[5, 3].tag = mediumVillagePrefab.tag;
+        GameObject villager = UnityEngine.Object.Instantiate(unitPrefab, unitPrefab.transform.position + new Vector3(5, 0, 3), Quaternion.identity);
+        grid.gridArray[5, 3].AddUnit(5, 3, villager, flagPrefab);
+        units.Add(villager);
+        GameObject village = UnityEngine.Object.Instantiate(villageGO, villageGO.transform.position + new Vector3(5, 0, 3), Quaternion.identity);
+        grid.gridArray[5, 3].AddUnit(5, 3, village, flagPrefab);
+        units.Add(village);
+
+        GameObject trees = UnityEngine.Object.Instantiate(treesGO, treesGO.transform.position + new Vector3(2, 0, 5), Quaternion.identity);
+        grid.gridArray[2, 5].AddUnit(2, 5, trees, flagPrefab);
+        units.Add(trees);
+        GenerateFloorTile("small", 8, 5);
+        GenerateFloorTile("small", 3, 6);
+        GenerateFloorTile("small", 3, 8);
+        GenerateFloorTile("small", 4, 3);
+        GenerateFloorTile("small", 4, 2);
+        GenerateFloorTile("small", 5, 2);
+        GenerateFloorTile("small", 7, 3);
         GenerateFloorTile("small", 7, 2);
+        GenerateFloorTile("small", 8, 8);
+        GenerateFloorTile("small", 3, 1);
+        GenerateFloorTile("small", 2, 1);
+        GenerateFloorTile("small", 1, 1);
+        GenerateFloorTile("small", 1, 3);
+        GenerateFloorTile("small", 2, 3);
+        GenerateFloorTile("small", 3, 3);
+        GenerateFloorTile("small", 1, 7);
+        GenerateFloorTile("small", 6, 5);
+        GenerateFloorTile("small", 5, 5);
+
+        
+        GenerateFloorTile("medium", 5, 8);
+        GenerateFloorTile("medium", 5, 7);
+        GenerateFloorTile("medium", 4, 7);
+        GenerateFloorTile("medium", 8, 4);
+        GenerateFloorTile("medium", 8, 3);
+        GenerateFloorTile("medium", 6, 4);
+        GenerateFloorTile("medium", 4, 5);
+        GenerateFloorTile("medium", 3, 5);
+         GenerateFloorTile("medium", 6, 8);
+        GenerateFloorTile("medium", 7, 8);
+        GenerateFloorTile("medium", 7, 7);
+        GenerateFloorTile("medium", 8, 7);
+
+        GenerateFloorTile("large", 6, 7);
+        GenerateFloorTile("large", 1, 5);
+        GenerateFloorTile("large", 1, 4);
+        GenerateFloorTile("large", 3, 2);
+        GenerateFloorTile("large", 2, 2);
+        GenerateFloorTile("large", 1, 2);
     }
+    
+    
 
     public void GenerateFloorTile(String size, int x, int z)
     {
@@ -511,11 +592,13 @@ public class GameManager : MonoBehaviour
         if (selectedBridgeTile == null)
         {
             selectedBridgeTile = tile;
-            Debug.Log("First bridge tile");
         }
         else
-        { // there is a selected bridge tile different than this tile 
-            Debug.Log("Second bridge tile");
+        { // there is a selected bridge tile different than this tile
+            if(numBridges <= 0){
+                Debug.Log("Youre out of bridges");
+                return; 
+            } 
             placeBridge(selectedBridgeTile, tile);
             selectedBridgeTile = null;
             inBridgeMode = false;
