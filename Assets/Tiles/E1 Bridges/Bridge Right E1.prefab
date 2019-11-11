@@ -192,7 +192,7 @@ GameObject:
   m_Component:
   - component: {fileID: 23985977448617133}
   m_Layer: 0
-  m_Name: BridgeRight E1
+  m_Name: Bridge Right E1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -206,7 +206,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6147341881977545817}
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0.1875, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 0.125, z: 1}
   m_Children:
   - {fileID: 6549964458606431219}

@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI bridgesText;
     public GameObject titleScreen;
     public GameObject gameOverScreen;
-    public Color titleBackgroundColor, gameBackgroundColor;
+    public Color titleBackgroundColor, gameBackgroundColor, bridgeBackgroundColor;
 
     #region GridTestVars
     public MapGrid<GridContainer> grid;
@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour
     public GameObject waterPrefab; 
     public List<GameObject> units = new List<GameObject>();
     private GameObject selected;
+    private GameObject selectedBridgeTile; 
     #endregion
 
     //UI (gameplay) vars
@@ -45,14 +46,17 @@ public class GameManager : MonoBehaviour
     public GameObject bridgeE2Corner_Up;
     public GameObject bridgeE2Corner_Right;
 
-    public float bridgeE1_y = .1875f;
+    //public float bridgeE1_y = .1875f;
+    public float bridgeE1_y = -.0625f;
     public float bridgeE2_y = .4375f;
+    public float bridgeE3_y = .9375f;
 
     //public vars
     public bool isGameActive;
 
     //private vars
     private int bridges;
+    private bool inBridgeMode = false; 
 
     // Start is called before the first frame update
     void Start()
@@ -65,8 +69,8 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
-        MouseGridCommands();
+        MouseSelection();
+        EnterBridgeMode(); 
         checkIfGameOver();
     }
 
@@ -152,12 +156,12 @@ public class GameManager : MonoBehaviour
         grid.gridArray[1,1].AddUnit(1, 1, newUnit);
         units.Add(newUnit);
 
-        GameObject villager1 = UnityEngine.Object.Instantiate(villager1Prefab, villager1Prefab.transform.position + new Vector3(3, 0, 2), Quaternion.identity);
+        /*GameObject villager1 = UnityEngine.Object.Instantiate(villager1Prefab, villager1Prefab.transform.position + new Vector3(3, 0, 2), Quaternion.identity);
         grid.gridArray[3,2].AddUnit(3, 2, villager1);
 
         GameObject villager2 = UnityEngine.Object.Instantiate(villager2Prefab, villager2Prefab.transform.position + new Vector3(2, 0, 3), Quaternion.identity);
         grid.gridArray[2,3].AddUnit(2, 3, villager2);
-
+        */
     }
 
     public void GenerateRandomGrid (){
@@ -196,35 +200,13 @@ public class GameManager : MonoBehaviour
             }
         }
         Debug.Log("GenerateGrid");
-        
-        /*grid.gridArray[4,8].AddUnit(4, 8, mediumForestPrefab); 
-        grid.gridArray[5,8].AddUnit(5, 8, mediumPrefab);
-        grid.gridArray[5,7].AddUnit(5, 7, mediumPrefab);
-        grid.gridArray[4,7].AddUnit(4, 7, mediumPrefab);
-        grid.gridArray[7,5].AddUnit(7, 5, mediumVillagePrefab);
-        grid.gridArray[2,5].AddUnit(2, 5, mediumForestPrefab);
-        grid.gridArray[8,3].AddUnit(8, 3, mediumPrefab);
-        grid.gridArray[3,2].AddUnit(3, 2, mediumPrefab);
-        grid.gridArray[2,2].AddUnit(2, 2, mediumPrefab);
-
-        grid.gridArray[6,7].AddUnit(6, 7, largePrefab);
-        grid.gridArray[1,5].AddUnit(1, 5, largePrefab);
-        grid.gridArray[1,4].AddUnit(1, 4, largePrefab);
-        grid.gridArray[3,3].AddUnit(3, 3, largePrefab);
-
-        grid.gridArray[3,6].AddUnit(3, 6, smallPrefab);
-        grid.gridArray[4,6].AddUnit(4, 6, smallPrefab);
-        grid.gridArray[4,3].AddUnit(4, 3, smallPrefab);
-        grid.gridArray[4,2].AddUnit(4, 2, smallPrefab);
-        grid.gridArray[5,2].AddUnit(5, 2, smallPrefab);
-        grid.gridArray[7,3].AddUnit(7, 3, smallPrefab);*/
 
         GameObject medForest = UnityEngine.Object.Instantiate(mediumForestPrefab,mediumForestPrefab.transform.position + new Vector3(4, 0, 8), Quaternion.identity);
         grid.gridArray[4,8].SetFloor(medForest, 1.25f);
         medForest = UnityEngine.Object.Instantiate(mediumForestPrefab,mediumForestPrefab.transform.position + new Vector3(2, 0, 5), Quaternion.identity);
         grid.gridArray[2,5].SetFloor(medForest, 1.25f);
-        GameObject medVillage = UnityEngine.Object.Instantiate(mediumVillagePrefab,mediumVillagePrefab.transform.position + new Vector3(7, 0, 5), Quaternion.identity);
-        grid.gridArray[7,5].SetFloor(medForest, 1.25f);
+        GameObject medVillage = UnityEngine.Object.Instantiate(mediumVillagePrefab,mediumVillagePrefab.transform.position + new Vector3(8, 0, 5), Quaternion.identity);
+        grid.gridArray[8,5].SetFloor(medForest, 1.25f);
 
         GenerateFloorTile("medium", 5,8); 
         GenerateFloorTile("medium", 5,7); 
@@ -237,6 +219,8 @@ public class GameManager : MonoBehaviour
         GenerateFloorTile("large", 1,5); 
         GenerateFloorTile("large", 1,4); 
         GenerateFloorTile("large", 3,3);
+        GenerateFloorTile("large", 1,2);
+
 
         GenerateFloorTile("small", 3,6);
         GenerateFloorTile("small", 4,6);
@@ -244,8 +228,7 @@ public class GameManager : MonoBehaviour
         GenerateFloorTile("small", 4,2);
         GenerateFloorTile("small", 5,2);
         GenerateFloorTile("small", 7,3); 
-
-
+        GenerateFloorTile("small", 7,2);
     }
 
     public void GenerateFloorTile(String size, int x, int z) {
@@ -259,6 +242,30 @@ public class GameManager : MonoBehaviour
         }else if(size == "large"){
             GameObject large = UnityEngine.Object.Instantiate(largePrefab, largePrefab.transform.position + new Vector3(x, 0, z), Quaternion.identity);
             grid.gridArray[x,z].SetFloor(large, 1.5f);
+        }
+    }
+
+    
+    public void MouseSelection(){
+        if(inBridgeMode){
+            BridgeSelectionCommands(); 
+        }else{
+            MouseGridCommands();
+        }
+    }
+
+    public void BridgeSelectionCommands(){
+        if (Input.GetMouseButtonDown(0))
+        {
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        
+            if (Physics.Raycast(ray, out hit)) 
+            {
+                GameObject objectHit = hit.transform.gameObject;
+                
+                SelectBridgeTile(objectHit);
+            }
         }
     }
 
@@ -339,6 +346,66 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void SelectBridgeTile(GameObject tile){
+        if(selectedBridgeTile == tile){
+            return; 
+        }
+        if(selectedBridgeTile == null ){
+            selectedBridgeTile = tile; 
+            Debug.Log("First bridge tile");
+        } else{ // there is a selected bridge tile different than this tile 
+            Debug.Log("Second bridge tile");
+            placeBridge(selectedBridgeTile, tile);
+            selectedBridgeTile = null; 
+            inBridgeMode = false; 
+            mainCamera.backgroundColor = gameBackgroundColor;
+        }
+    }
+
+    public void placeBridge(GameObject src, GameObject dst){
+        int srcX, srcZ;
+        int dstX, dstZ; 
+        grid.GetXY(src.transform.position, out srcX, out srcZ); 
+        grid.GetXY(dst.transform.position, out dstX, out dstZ); 
+        Debug.Log(src.tag); 
+        Debug.Log("source position: " + srcX + ", " + srcZ);
+        if(src.tag != dst.tag || !(srcX==dstX || srcZ==dstZ)){
+            Debug.Log("Can't place bridge"); 
+            selectedBridgeTile = null; 
+            return; 
+        }
+
+        int bridgeX, bridgeZ; 
+        if(srcX == dstX && Math.Abs(srcZ-dstZ) == 2){
+            bridgeX = srcX;
+            bridgeZ = (srcZ + dstZ) / 2; 
+        }
+        else if (srcZ == dstZ && Math.Abs(srcX-dstX) == 2){
+            bridgeZ = srcZ;
+            bridgeX = (srcX + dstX) / 2; 
+        }
+        else {
+            Debug.Log("Can't place bridge"); 
+            selectedBridgeTile = null; 
+            return; 
+        }
+        
+        float bridgeHeight; 
+        if(src.tag == "E1"){
+           bridgeHeight = bridgeE1_y; 
+        } else if(src.tag == "E2"){
+            bridgeHeight = bridgeE2_y; 
+        } else if(src.tag == "E3"){
+            bridgeHeight = bridgeE3_y;
+        } else {
+            Debug.Log("Can't place bridge"); 
+            selectedBridgeTile = null; 
+            return; 
+        }
+           GameObject bridge = UnityEngine.Object.Instantiate(bridgeE1_Left, new Vector3(bridgeX, bridgeHeight, bridgeZ), Quaternion.identity);
+           grid.gridArray[bridgeX,bridgeZ].AddUnit(bridgeX, bridgeZ, bridge); 
+    }
+
     public static Vector3 GetMouseWorldPosition() 
     {
         Vector3 vec = GetMouseWorldPositionWithY(Input.mousePosition, Camera.main);
@@ -357,5 +424,18 @@ public class GameManager : MonoBehaviour
     }
 
     #endregion
+
+    public void EnterBridgeMode(){
+        if(Input.GetKeyDown("b")){
+            if(inBridgeMode){
+                selectedBridgeTile = null; 
+                inBridgeMode = false; 
+                 mainCamera.backgroundColor = gameBackgroundColor;
+            } else {
+                inBridgeMode = true; 
+                 mainCamera.backgroundColor = bridgeBackgroundColor;
+            }
+        }
+    }
 
 }

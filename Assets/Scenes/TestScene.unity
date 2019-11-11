@@ -229,6 +229,7 @@ MonoBehaviour:
   gameOverScreen: {fileID: 1922428993}
   titleBackgroundColor: {r: 0.5019608, g: 0.5019608, b: 0.5019608, a: 0}
   gameBackgroundColor: {r: 0.501513, g: 0.9245283, b: 0.67071915, a: 0}
+  bridgeBackgroundColor: {r: 0.21560161, g: 0.6757039, b: 0.8962264, a: 0}
   smallPrefab: {fileID: 5392633345588685800, guid: 9f8d690eeaa34334fbc1b28362f2eeeb,
     type: 3}
   mediumPrefab: {fileID: 1888997304066154816, guid: 5e4d2d3460c56ac4e93075b784b6d200,
@@ -243,8 +244,10 @@ MonoBehaviour:
     type: 3}
   villager2Prefab: {fileID: 3681121118072907097, guid: a0ba2ccee53c186438d520276c18fd13,
     type: 3}
-  mediumVillagePrefab: {fileID: 0}
-  mediumForestPrefab: {fileID: 0}
+  mediumVillagePrefab: {fileID: 4478584081690314797, guid: 54649cf324aa123449a62f6625555ef9,
+    type: 3}
+  mediumForestPrefab: {fileID: 6604530842377122371, guid: fe7ec277763c43743ac09ff674ed0b0e,
+    type: 3}
   waterPrefab: {fileID: 7294360027076636351, guid: 6f3f0d34a30a0fb478e28b57c7a71f7c,
     type: 3}
   units: []
@@ -272,8 +275,9 @@ MonoBehaviour:
     type: 3}
   bridgeE2Corner_Right: {fileID: 7317771080559025310, guid: 739b2c80d64624840bea51a5fddd261e,
     type: 3}
-  bridgeE1_y: 0.1875
+  bridgeE1_y: -0.0625
   bridgeE2_y: 0.4375
+  bridgeE3_y: 0.9375
   isGameActive: 0
 --- !u!4 &972558199
 Transform:
