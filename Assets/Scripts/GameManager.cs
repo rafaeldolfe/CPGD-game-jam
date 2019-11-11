@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     //UI (menu) vars
     public GameObject titleScreen;
     public GameObject gameOverScreen;
+    public GameObject winScreen;
     public Color titleBackgroundColor, gameBackgroundColor, bridgeBackgroundColor;
     public Pathfinding pf;
 
@@ -62,7 +63,7 @@ public class GameManager : MonoBehaviour
     public bool isGameActive;
 
     //private vars
-    private int timeLeft = 50; //this needs to be non-zero for checkIfGameOver(); while in menus
+    private int timeLeft = 100; //this needs to be non-zero for checkIfGameOver(); while in menus
     private int bridges = 3;
     private int resources = 0;
     private bool inBridgeMode = false; 
@@ -93,7 +94,7 @@ public class GameManager : MonoBehaviour
         mainCamera.backgroundColor = gameBackgroundColor;
 
         //set initial time
-        timeLeft = 60 - (10 * difficulty);
+        timeLeft = 120 - (10 * difficulty);
         timerText.text = "Time: " + timeLeft;
         timerText.gameObject.SetActive(true);
         UpdateTime(0);
@@ -148,12 +149,16 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void UpdateResources(int resourcesChange)
+    public void UpdateResources(int resourcesChange)
     {
         if (isGameActive)
         {
             resources += resourcesChange;
             resourcesText.text = "Resources: " + resources;
+        }
+        if(resources == 3)
+        {
+            WinGame();
         }
     }
 
@@ -185,6 +190,13 @@ public class GameManager : MonoBehaviour
         mainCamera.backgroundColor = titleBackgroundColor;
         isGameActive = false;
         gameOverScreen.gameObject.SetActive(true);
+    }
+
+    public void WinGame()
+    {
+        mainCamera.backgroundColor = Color.blue;
+        isGameActive = false;
+        winScreen.gameObject.SetActive(true);
     }
 
     public void RestartGame()
@@ -273,13 +285,15 @@ public class GameManager : MonoBehaviour
         grid.gridArray[2, 5].AddUnit(2, 5, trees, flagPrefab);
         units.Add(trees);
 
+        GameObject trees2 = UnityEngine.Object.Instantiate(treesGO, treesGO.transform.position + new Vector3(4, 0, 8), Quaternion.identity);
+        grid.gridArray[4, 8].AddUnit(4, 8, trees2, flagPrefab);
+        units.Add(trees2);
+
         village.GetComponent<Village>().trees = trees;
+        village.GetComponent<Village>().trees2 = trees2;
         village.GetComponent<Village>().villager = villager;
         village.GetComponent<Village>().pf = this.pf;
-        Debug.Log("did they get set?");
-        Debug.Log(village.GetComponent<Village>().trees);
-        Debug.Log(village.GetComponent<Village>().villager);
-
+        village.GetComponent<Village>().gm = this;
 
         GenerateFloorTile("medium", 5, 8);
         GenerateFloorTile("medium", 5, 7);
@@ -287,6 +301,7 @@ public class GameManager : MonoBehaviour
         GenerateFloorTile("medium", 8, 3);
         GenerateFloorTile("medium", 3, 2);
         GenerateFloorTile("medium", 2, 2);
+        GenerateFloorTile("medium", 3, 5);
 
         GenerateFloorTile("large", 6, 7);
         GenerateFloorTile("large", 1, 5);
@@ -303,6 +318,13 @@ public class GameManager : MonoBehaviour
         GenerateFloorTile("small", 5, 2);
         GenerateFloorTile("small", 7, 3);
         GenerateFloorTile("small", 7, 2);
+        GenerateFloorTile("small", 7, 3);
+        GenerateFloorTile("small", 7, 4);
+        GenerateFloorTile("small", 7, 5);
+        GenerateFloorTile("small", 7, 6);
+        GenerateFloorTile("small", 7, 7);
+        GenerateFloorTile("small", 7, 8);
+        GenerateFloorTile("small", 6, 8);
     }
 
     public void GenerateFloorTile(String size, int x, int z)
