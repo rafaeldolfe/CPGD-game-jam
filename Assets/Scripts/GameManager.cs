@@ -20,13 +20,13 @@ public class GameManager : MonoBehaviour
     public GameObject smallPrefab;
     public GameObject mediumPrefab;
     public GameObject largePrefab;
-    public GameObject unit;
+    public GameObject unitPrefab;
     public GameObject flagPrefab;
     public GameObject villager1Prefab;
     public GameObject villager2Prefab;
-    public GameObject mediumVillage;
-    public GameObject mediumForest; 
-    public GameObject water; 
+    public GameObject mediumVillagePrefab;
+    public GameObject mediumForestPrefab; 
+    public GameObject waterPrefab; 
     public List<GameObject> units = new List<GameObject>();
     private GameObject selected;
     #endregion
@@ -85,7 +85,7 @@ public class GameManager : MonoBehaviour
         titleScreen.gameObject.SetActive(false);
 
         GenerateGrid();
-        //TestGenerateBridge();
+        TestGenerateBridge();
     }
 
     #region Update Game (example): gain 1 bridge every 1 or 1/2 or 1/3 sec (difficulty determines this), game over at 10 bridges
@@ -173,21 +173,13 @@ public class GameManager : MonoBehaviour
     //     }*/
     // }
 
-    // void TestGenerateBridge() //implemented gridTest's grid generation into GameManager
-    // {
-    //     grid = new MapGrid<GridContainer>(10, 10, 1, new Vector3(0, 0, 0), (MapGrid<GridContainer> g, int x, int y) => new GridContainer(g, x, y));
+    void TestGenerateBridge() //implemented gridTest's grid generation into GameManager
+    {
 
-    //     for (int x = 0; x < grid.gridArray.GetLength(0); x++)
-    //     {
-    //         for (int y = 0; y < grid.gridArray.GetLength(1); y++)
-    //         {
-    //             grid.gridArray[x, y].AddUnit(water);
-    //         }
-    //     }
-    //     grid.gridArray[6, 5].AddUnit(bridgeE2_Left);
-    //     grid.gridArray[5, 5].AddUnit(bridgeE2Corner_Down);
-    //     grid.gridArray[5, 6].AddUnit(bridgeE2_Right);
-    // }
+        grid.gridArray[1, 0].AddUnit(1, 0, bridgeE2_Left);
+        grid.gridArray[0, 0].AddUnit(0, 0, bridgeE2Corner_Down);
+        grid.gridArray[0, 1].AddUnit(0, 1, bridgeE2_Right);
+    }
 
     public void GameOver()
     {
@@ -212,15 +204,19 @@ public class GameManager : MonoBehaviour
         {
             for (int z = 0; z < grid.gridArray.GetLength(1); z++)
             {
-                grid.gridArray[x,z].AddUnit(x, z, water);
+                grid.gridArray[x,z].AddUnit(x, z, waterPrefab);
             }
         }
         Debug.Log("GenerateGrid");
-        
-        grid.gridArray[4,8].AddUnit(4, 8, mediumForest); 
+
+           
+
+        GameObject mediumForest = UnityEngine.Object.Instantiate(mediumForestPrefab, mediumForestPrefab.transform.position + new Vector3(4, 0, 8), Quaternion.identity);
+        grid.gridArray[4,8].AddUnit(4, 8, mediumForest);
         grid.gridArray[5,8].AddUnit(5, 8, mediumPrefab);
         grid.gridArray[5,7].AddUnit(5, 7, mediumPrefab);
         grid.gridArray[4,7].AddUnit(4, 7, mediumPrefab);
+        GameObject mediumVillage = UnityEngine.Object.Instantiate(mediumVillagePrefab, mediumVillagePrefab.transform.position + new Vector3(4, 0, 8), Quaternion.identity);
         grid.gridArray[7,5].AddUnit(7, 5, mediumVillage);
         grid.gridArray[2,5].AddUnit(2, 5, mediumForest);
         grid.gridArray[8,3].AddUnit(8, 3, mediumPrefab);
@@ -240,7 +236,7 @@ public class GameManager : MonoBehaviour
         grid.gridArray[7,3].AddUnit(7, 3, smallPrefab);
 
 
-        for (int x = 0; x < grid.gridArray.GetLength(0); x++)
+        /*for (int x = 0; x < grid.gridArray.GetLength(0); x++)
         {
             for (int z = 0; z < grid.gridArray.GetLength(1); z++)
             {
@@ -262,13 +258,13 @@ public class GameManager : MonoBehaviour
                     grid.gridArray[x,z].SetFloor(small, 1.0f);
                 }
             }
-        }
+        }*/
 
 
 
-        GameObject newUnit = UnityEngine.Object.Instantiate(unit, unit.transform.position + new Vector3(1, 0, 1), Quaternion.identity);
+        GameObject newUnit = UnityEngine.Object.Instantiate(unitPrefab, unitPrefab.transform.position + new Vector3(1, 0, 1), Quaternion.identity);
         newUnit.GetComponent<MetaInformation>().init(1, 1);
-        unit.GetComponent<MoveQueue>().AddMove(new Vector3(3, grid.gridArray[3,3].height, 3));
+        unitPrefab.GetComponent<MoveQueue>().AddMove(new Vector3(3, grid.gridArray[3,3].height, 3));
         grid.gridArray[1,1].AddUnit(1, 1, newUnit);
         units.Add(newUnit);
 
