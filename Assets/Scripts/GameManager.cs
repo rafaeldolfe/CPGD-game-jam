@@ -62,9 +62,10 @@ public class GameManager : MonoBehaviour
     //public vars
     public bool isGameActive;
 
-    //private vars
-    private int timeLeft = 100; //this needs to be non-zero for checkIfGameOver(); while in menus
-    private int bridges = 3;
+    //private var
+
+    private int timeLeft = 50; //this needs to be non-zero for checkIfGameOver(); while in menus
+    private int numBridges = 3;
     private int resources = 0;
     private bool inBridgeMode = false; 
 
@@ -103,12 +104,20 @@ public class GameManager : MonoBehaviour
         StartCoroutine(Example(timeRate)); //do you need to do something over time? it needs to be a coroutine
 
         //set intial bridges
-        bridgeText.text = "Bridges: " + bridges;
+        bridgeText.text = "Bridges: " + numBridges;
         bridgeText.gameObject.SetActive(true);
 
         //set initial resources
         resourcesText.text = "Resources: " + resources;
         resourcesText.gameObject.SetActive(true);
+
+        if(difficulty == 1 ){
+            numBridges = 4;
+        }else if (difficulty == 2){
+            numBridges = 3;
+        }else if (difficulty ==3){
+            numBridges = 2;
+        }
 
         titleScreen.gameObject.SetActive(false);
 
@@ -135,8 +144,8 @@ public class GameManager : MonoBehaviour
     {
         if (isGameActive)
         {
-            bridges += 1;
-            bridgeText.text = "Bridges: " + bridges;
+            numBridges += 1;
+            bridgeText.text = "Bridges: " + numBridges;
         }
     }
 
@@ -144,8 +153,8 @@ public class GameManager : MonoBehaviour
     {
         if (isGameActive)
         {
-            bridges -= 1;
-            bridgeText.text = "Bridges: " + bridges;
+            numBridges -= 1;
+            bridgeText.text = "Bridges: " + numBridges;
         }
     }
 
@@ -378,6 +387,28 @@ public class GameManager : MonoBehaviour
                 GameObject objectHit = hit.transform.gameObject;
 
                 SelectBridgeTile(objectHit);
+
+            }
+        }
+        if (Input.GetMouseButtonDown(1)) // right click
+        {
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        
+            if (Physics.Raycast(ray, out hit)) 
+            {
+                GameObject objectHit = hit.transform.gameObject;
+
+                
+                int x;
+                int z;
+                grid.GetXY(objectHit.transform.position, out x, out z);
+                Debug.Log("selecting x: " + x +" z: " + z); 
+                if (grid.gridArray[x,z].RemoveBridge()) { 
+                    grid.pathNodes[x,z].isWalkable = false;
+                    GainBridge(); 
+                }
+               // DeleteBridgeTile(objectHit);
             }
         }
     }
@@ -517,21 +548,17 @@ public class GameManager : MonoBehaviour
     public void placeBridge(GameObject src, GameObject dst)
     {
         int srcX, srcZ;
-        int dstX, dstZ;
-        grid.GetXY(src.transform.position, out srcX, out srcZ);
-        grid.GetXY(dst.transform.position, out dstX, out dstZ);
-        Debug.Log(src.tag);
-        Debug.Log("source position: " + srcX + ", " + srcZ);
-        if (src.tag != dst.tag || !(srcX == dstX || srcZ == dstZ))
-        {
-            Debug.Log("Can't place bridge");
-            selectedBridgeTile = null;
-            return;
-        }
+        int dstX, dstZ; 
+        grid.GetXY(src.transform.position, out srcX, out srcZ); 
+        grid.GetXY(dst.transform.position, out dstX, out dstZ); 
 
-        int bridgeX, bridgeZ;
-        if (srcX == dstX && Math.Abs(srcZ - dstZ) == 2)
-        {
+        if(src.tag != dst.tag || !(srcX==dstX || srcZ==dstZ)){
+            Debug.Log("Can't place bridge"); 
+            selectedBridgeTile = null; 
+            return; 
+        }
+        int bridgeX, bridgeZ; 
+        if(srcX == dstX && Math.Abs(srcZ-dstZ) == 2){
             bridgeX = srcX;
             bridgeZ = (srcZ + dstZ) / 2;
         }
@@ -569,6 +596,7 @@ public class GameManager : MonoBehaviour
             selectedBridgeTile = null;
             return;
         }
+        LoseBridge(); 
         GameObject bridge = UnityEngine.Object.Instantiate(bridgeE1_Left, new Vector3(bridgeX, bridgeHeight, bridgeZ), Quaternion.identity);
         grid.gridArray[bridgeX, bridgeZ].AddUnit(bridgeX, bridgeZ, bridge, flagPrefab);
         // Make node now walkable too, also the height will depend on the bridge type

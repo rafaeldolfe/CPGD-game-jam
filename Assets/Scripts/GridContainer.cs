@@ -45,6 +45,20 @@ public class GridContainer
         gos.Remove(unit);
     }
 
+    public bool RemoveBridge(){
+        //this assumes only one bridge per tile
+        for(int k = 0; k < gos.Count; k++ ){
+            GameObject go = gos[k]; 
+            if(go.tag == "Bridge"){
+                gos.RemoveAt(k);
+                Debug.Log("Bridge removed?? + " + (go == null));
+                go.SetActiveRecursively(false); 
+                return true; 
+            }
+        }
+        return false; 
+    }
+
     public void DespawnUnit(GameObject unit)
     {
         GameObject.Destroy(unit);

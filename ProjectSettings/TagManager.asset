@@ -8,6 +8,7 @@ TagManager:
   - E2
   - E3
   - E0
+  - Bridge
   layers:
   - Default
   - TransparentFX
