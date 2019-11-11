@@ -92,7 +92,7 @@ public class GameManager : MonoBehaviour
         titleScreen.gameObject.SetActive(false);
 
         GenerateGrid();
-        TestGenerateBridge();
+        //TestGenerateBridge();
     }
 
     #region Update Game (example): gain 1 bridge every 1 or 1/2 or 1/3 sec (difficulty determines this), game over at 10 bridges

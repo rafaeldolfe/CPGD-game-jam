@@ -52,7 +52,7 @@ public class Highlight : MonoBehaviour
             Destroy(rallyPoint.go);
         }
 
-        GameObject clone = UnityEngine.Object.Instantiate(flag, flag.transform.position + new Vector3(x, 0, z), Quaternion.identity);
+        GameObject clone = UnityEngine.Object.Instantiate(flag, flag.transform.position + new Vector3(x, 0, z), flag.transform.rotation);
         RallyPoint flagObj = new RallyPoint(clone, x, z);
         rallyPoint = flagObj;
     }
