@@ -7,7 +7,7 @@ public class Highlight : MonoBehaviour
     private Color startcolor;
     private Color currentcolor;
     private bool selected;
-    public GameObject rallyPoint;
+    public RallyPoint rallyPoint;
     public void Start()
     {
         startcolor = gameObject.GetComponent<Renderer>().material.color;
@@ -47,33 +47,51 @@ public class Highlight : MonoBehaviour
 
     public void PlaceFlag(int x, int z, GameObject flag)
     {
-        if (rallyPoint)
+        if (rallyPoint != null)
         {
-            Destroy(rallyPoint);
+            Destroy(rallyPoint.go);
         }
 
         GameObject clone = UnityEngine.Object.Instantiate(flag, flag.transform.position + new Vector3(x, 0, z), Quaternion.identity);
-
-        rallyPoint = clone;
+        RallyPoint flagObj = new RallyPoint(clone, x, z);
+        rallyPoint = flagObj;
     }
 
-    public void RemoveFlag(Vector3 pos, GameObject flag)
+    public void RemoveFlag()
     {
-        Destroy(rallyPoint);
+        if (rallyPoint != null)
+        {
+            Destroy(rallyPoint.go);
+            rallyPoint = null;
+        }
     }
 
     public void HideFlag()
     {
-        if(rallyPoint)
+        if(rallyPoint != null)
         {
-            rallyPoint.SetActive(false);
+            rallyPoint.go.SetActive(false);
         }
     }
     public void ShowFlag()
     {
-        if(rallyPoint)
+        if(rallyPoint != null)
         {
-            rallyPoint.SetActive(true);
+            rallyPoint.go.SetActive(true);
         }
+    }
+}
+
+public class RallyPoint
+{
+    public GameObject go;
+    public int x;
+    public int z;
+
+    public RallyPoint(GameObject go, int x, int z)
+    {
+        this.go = go;
+        this.x = x;
+        this.z = z;
     }
 }

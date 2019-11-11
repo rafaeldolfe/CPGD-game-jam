@@ -21,15 +21,20 @@ public class GridContainer
 
     public void SetFloor(GameObject unit, float height)
     {
+        if (floor)
+        {
+            GameObject.Destroy(floor);
+            floor = null;
+        }
         this.floor = unit;
         this.height = height;
     }
 
     public void AddUnit(int x, int z, GameObject unit)
     {
-        Debug.Log(unit.GetComponent<MetaInformation>());
-        //unit.GetComponent<MetaInformation>().x = x;
-        //unit.GetComponent<MetaInformation>().z = z;
+        unit.GetComponent<MetaInformation>().x = x;
+        unit.GetComponent<MetaInformation>().z = z;
+        unit.GetComponent<MetaInformation>().grid = this.grid;
         gos.Add(unit);
     }
 

@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     public GameObject titleScreen;
     public GameObject gameOverScreen;
     public Color titleBackgroundColor, gameBackgroundColor;
+    public Pathfinding pf;
 
     #region GridTestVars
     public MapGrid<GridContainer> grid;
@@ -57,6 +58,8 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        grid = new MapGrid<GridContainer>(10, 10, 1, new Vector3(0,0,0), (MapGrid<GridContainer> g, int x, int y) => new GridContainer(g, x, y));
+        pf = new Pathfinding(grid);
         mainCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
         mainCamera.clearFlags = CameraClearFlags.SolidColor;
         mainCamera.backgroundColor = titleBackgroundColor;
@@ -65,7 +68,6 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
         MouseGridCommands();
         checkIfGameOver();
     }
@@ -131,23 +133,19 @@ public class GameManager : MonoBehaviour
     #region GridTest
     public void GenerateGrid()
     {
-        Debug.Log("GenerateGrid");
-        grid = new MapGrid<GridContainer>(10, 10, 1, new Vector3(0,0,0), (MapGrid<GridContainer> g, int x, int y) => new GridContainer(g, x, y));
 
         //GenerateRandomGrid();
         GenerateLevelGrid();
 
-        GameObject newUnit = UnityEngine.Object.Instantiate(unitPrefab, unitPrefab.transform.position + new Vector3(1, 0, 1), Quaternion.identity);
-        newUnit.GetComponent<MetaInformation>().init(1, 1);
-        unitPrefab.GetComponent<MoveQueue>().AddMove(new Vector3(3, grid.gridArray[3,3].height, 3));
-        grid.gridArray[1,1].AddUnit(1, 1, newUnit);
+        GameObject newUnit = UnityEngine.Object.Instantiate(unitPrefab, unitPrefab.transform.position + new Vector3(2, 0, 2), Quaternion.identity);
+        grid.gridArray[2,2].AddUnit(2, 2, newUnit);
         units.Add(newUnit);
 
-        GameObject villager1 = UnityEngine.Object.Instantiate(villager1Prefab, villager1Prefab.transform.position + new Vector3(3, 0, 2), Quaternion.identity);
-        grid.gridArray[3,2].AddUnit(3, 2, villager1);
+        // GameObject villager1 = UnityEngine.Object.Instantiate(villager1Prefab, villager1Prefab.transform.position + new Vector3(3, 0, 2), Quaternion.identity);
+        // grid.gridArray[3,2].AddUnit(3, 2, villager1);
 
-        GameObject villager2 = UnityEngine.Object.Instantiate(villager2Prefab, villager2Prefab.transform.position + new Vector3(2, 0, 3), Quaternion.identity);
-        grid.gridArray[2,3].AddUnit(2, 3, villager2);
+        // GameObject villager2 = UnityEngine.Object.Instantiate(villager2Prefab, villager2Prefab.transform.position + new Vector3(2, 0, 3), Quaternion.identity);
+        // grid.gridArray[2,3].AddUnit(2, 3, villager2);
 
     }
 
@@ -176,17 +174,24 @@ public class GameManager : MonoBehaviour
 
     public void GenerateLevelGrid(){
         
-        Debug.Log("GeneratingWater");
         for (int x = 0; x < grid.gridArray.GetLength(0); x++)
         {
             for (int z = 0; z < grid.gridArray.GetLength(1); z++)
             {
                 GameObject water = UnityEngine.Object.Instantiate(waterPrefab, waterPrefab.transform.position + new Vector3(x, -0.5f, z), Quaternion.identity);
                 grid.gridArray[x,z].SetFloor(water, 0.0f);
-
+                grid.pathNodes[x,z].isWalkable = false;
             }
         }
-        Debug.Log("GenerateGrid");
+
+        for (int x = 0; x < grid.gridArray.GetLength(0); x++)
+        {
+            for (int z = 0; z < grid.gridArray.GetLength(1); z++)
+            {
+                //GameObject small = UnityEngine.Object.Instantiate(smallPrefab, smallPrefab.transform.position + new Vector3(x, -0.5f, z), Quaternion.identity);
+                //grid.gridArray[x,z].SetFloor(small, 0.0f);
+            }
+        }
         
         /*grid.gridArray[4,8].AddUnit(4, 8, mediumForestPrefab); 
         grid.gridArray[5,8].AddUnit(5, 8, mediumPrefab);
@@ -243,13 +248,16 @@ public class GameManager : MonoBehaviour
 
         if(size == "small"){
             GameObject small = UnityEngine.Object.Instantiate(smallPrefab, smallPrefab.transform.position + new Vector3(x, 0, z), Quaternion.identity);
-            grid.gridArray[x,z].SetFloor(small, 1.0f);
+            grid.gridArray[x,z].SetFloor(small, -0.25f + 0.5f);
+            grid.pathNodes[x,z].isWalkable = true;
         }else if(size == "medium"){
             GameObject medium = UnityEngine.Object.Instantiate(mediumPrefab, mediumPrefab.transform.position + new Vector3(x, 0, z), Quaternion.identity);
-            grid.gridArray[x,z].SetFloor(medium, 1.25f);
+            grid.gridArray[x,z].SetFloor(medium, 0.25f + 0.5f);
+            grid.pathNodes[x,z].isWalkable = true;
         }else if(size == "large"){
             GameObject large = UnityEngine.Object.Instantiate(largePrefab, largePrefab.transform.position + new Vector3(x, 0, z), Quaternion.identity);
-            grid.gridArray[x,z].SetFloor(large, 1.5f);
+            grid.gridArray[x,z].SetFloor(large, 0.75f + 0.5f);
+            grid.pathNodes[x,z].isWalkable = true;
         }
     }
 
@@ -281,30 +289,63 @@ public class GameManager : MonoBehaviour
                 // Only allow this flag setting to occur if the targeted game object is a tile
                 if(selected.GetComponent<Unit>())
                 {
+                    MetaInformation mi = selected.GetComponent<MetaInformation>();
                     Debug.Log(selected);
-                    selected.GetComponent<Highlight>().PlaceFlag(x, z, flagPrefab);
-                    selected.GetComponent<Pathfinding>().GoTo(x,z);
+                    selected.GetComponent<MoveQueue>().Clear();
+                    selected.GetComponent<Highlight>().RemoveFlag();
+                    if (grid.pathNodes[x,z].isWalkable)
+                    {
+                        if (pf.FindPath(mi.x, mi.z, x, z) != null)
+                        {
+                            selected.GetComponent<Highlight>().PlaceFlag(x, z, flagPrefab);
+                        }
+                    }
                 }
             }
         }
 
-        // foreach (var unitPrefab in units)
-        // {
-        //     if(unitPrefab.GetComponent<State>().GetState() == Constants.IDLE)
-        //     {
-        //         MetaInformation mi = unitPrefab.GetComponent<MetaInformation>();
-        //         int movex = Random.Range(0,2);
-        //         int movez = Random.Range(0,2);
-        //         if (movex == 1)
-        //         {
-        //             unitPrefab.GetComponent<MoveQueue>().AddMove(new Vector3(mi.x + movex, grid.gridArray[mi.x,mi.z].height, mi.z));
-        //         }
-        //         else if (movez == 1)
-        //         {
-        //             unitPrefab.GetComponent<MoveQueue>().AddMove(new Vector3(mi.x, grid.gridArray[mi.x,mi.z].height, mi.z + movez));
-        //         }
-        //     }
-        // }
+        foreach (var unitClone in units)
+        {
+            if(unitClone.GetComponent<Unit>() && unitClone.GetComponent<MoveQueue>())
+            {
+                MoveQueue mq = unitClone.GetComponent<MoveQueue>();
+                if (unitClone.GetComponent<State>().GetState() == Constants.BUSY)
+                {
+                    return;
+                }
+                if (mq.q.Count > 0)
+                {
+                    return;
+                }
+                if (unitClone.GetComponent<Highlight>() == null)
+                {
+                    return;
+                }
+                if (unitClone.GetComponent<Highlight>().rallyPoint == null)
+                {
+                    return;
+                }
+                int x = unitClone.GetComponent<Highlight>().rallyPoint.x;
+                int z = unitClone.GetComponent<Highlight>().rallyPoint.z;
+                MetaInformation mi = unitClone.GetComponent<MetaInformation>();
+                if (x == mi.x && z == mi.z)
+                {
+                    unitClone.GetComponent<Highlight>().RemoveFlag();
+                }
+                List<PathNode> path = pf.FindPath(mi.x, mi.z, x, z);
+
+                if (path == null)
+                {
+                    Debug.Log("No route to the target!");
+                }
+
+                foreach (PathNode node in path)
+                {
+                    unitClone.GetComponent<MoveQueue>().AddMove(new Vector3(node.x, grid.gridArray[node.x, node.z].height, node.z));
+                }
+
+            }
+        }
     }
 
     public void Select(GameObject go)
