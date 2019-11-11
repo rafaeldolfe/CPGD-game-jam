@@ -31,11 +31,12 @@ public class GridContainer
         this.height = height;
     }
 
-    public void AddUnit(int x, int z, GameObject unit)
+    public void AddUnit(int x, int z, GameObject unit, GameObject flagPrefab)
     {
         unit.GetComponent<MetaInformation>().x = x;
         unit.GetComponent<MetaInformation>().z = z;
         unit.GetComponent<MetaInformation>().grid = this.grid;
+        unit.GetComponent<MetaInformation>().flagPrefab = flagPrefab;
         gos.Add(unit);
     }
 

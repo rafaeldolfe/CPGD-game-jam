@@ -26,11 +26,13 @@ public class GameManager : MonoBehaviour
     public GameObject villager1Prefab;
     public GameObject villager2Prefab;
     public GameObject mediumVillagePrefab;
-    public GameObject mediumForestPrefab; 
-    public GameObject waterPrefab; 
+    public GameObject mediumForestPrefab;
+    public GameObject waterPrefab;
+    public GameObject villageGO;
+    public GameObject treesGO;
     public List<GameObject> units = new List<GameObject>();
     private GameObject selected;
-    private GameObject selectedBridgeTile; 
+    private GameObject selectedBridgeTile;
     #endregion
 
     //UI (gameplay) vars
@@ -57,12 +59,12 @@ public class GameManager : MonoBehaviour
 
     //private vars
     private int bridges;
-    private bool inBridgeMode = false; 
+    private bool inBridgeMode = false;
 
     // Start is called before the first frame update
     void Start()
     {
-        grid = new MapGrid<GridContainer>(10, 10, 1, new Vector3(0,0,0), (MapGrid<GridContainer> g, int x, int y) => new GridContainer(g, x, y));
+        grid = new MapGrid<GridContainer>(10, 10, 1, new Vector3(0, 0, 0), (MapGrid<GridContainer> g, int x, int y) => new GridContainer(g, x, y));
         pf = new Pathfinding(grid);
         mainCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
         mainCamera.clearFlags = CameraClearFlags.SolidColor;
@@ -73,7 +75,7 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         MouseSelection();
-        EnterBridgeMode(); 
+        EnterBridgeMode();
         checkIfGameOver();
     }
 
@@ -151,8 +153,9 @@ public class GameManager : MonoBehaviour
         GenerateLevelGrid();
     }
 
-    public void GenerateRandomGrid (){
-    for (int x = 0; x < grid.gridArray.GetLength(0); x++)
+    public void GenerateRandomGrid()
+    {
+        for (int x = 0; x < grid.gridArray.GetLength(0); x++)
         {
             for (int z = 0; z < grid.gridArray.GetLength(1); z++)
             {
@@ -174,16 +177,17 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void GenerateLevelGrid(){
-        
+    public void GenerateLevelGrid()
+    {
+
         for (int x = 0; x < grid.gridArray.GetLength(0); x++)
         {
             for (int z = 0; z < grid.gridArray.GetLength(1); z++)
             {
                 GameObject water = UnityEngine.Object.Instantiate(waterPrefab, waterPrefab.transform.position + new Vector3(x, -0.5f, z), Quaternion.identity);
-                grid.gridArray[x,z].SetFloor(water, 0.0f);
-                grid.pathNodes[x,z].isWalkable = false;
-                grid.pathNodes[x,z].tag = "E0";
+                grid.gridArray[x, z].SetFloor(water, 0.0f);
+                grid.pathNodes[x, z].isWalkable = false;
+                grid.pathNodes[x, z].tag = "E0";
             }
         }
 
@@ -197,89 +201,115 @@ public class GameManager : MonoBehaviour
         }
         Debug.Log("GenerateGrid");
 
-        GameObject medForest = UnityEngine.Object.Instantiate(mediumForestPrefab,mediumForestPrefab.transform.position + new Vector3(4, 0, 8), Quaternion.identity);
-        grid.gridArray[4,8].SetFloor(medForest, 0.75f);
-        grid.pathNodes[4,8].isWalkable = true;
-        grid.pathNodes[4,8].tag = mediumForestPrefab.tag;
-        medForest = UnityEngine.Object.Instantiate(mediumForestPrefab,mediumForestPrefab.transform.position + new Vector3(2, 0, 5), Quaternion.identity);
-        grid.gridArray[2,5].SetFloor(medForest, 0.75f);
-        grid.pathNodes[2,5].isWalkable = true;
-        grid.pathNodes[2,5].tag = mediumForestPrefab.tag;
+        GameObject medForest = UnityEngine.Object.Instantiate(mediumForestPrefab, mediumForestPrefab.transform.position + new Vector3(4, 0, 8), Quaternion.identity);
+        grid.gridArray[4, 8].SetFloor(medForest, 0.75f);
+        grid.pathNodes[4, 8].isWalkable = true;
+        grid.pathNodes[4, 8].tag = mediumForestPrefab.tag;
+        medForest = UnityEngine.Object.Instantiate(mediumForestPrefab, mediumForestPrefab.transform.position + new Vector3(2, 0, 5), Quaternion.identity);
+        grid.gridArray[2, 5].SetFloor(medForest, 0.75f);
+        grid.pathNodes[2, 5].isWalkable = true;
+        grid.pathNodes[2, 5].tag = mediumForestPrefab.tag;
         // GameObject medVillage = UnityEngine.Object.Instantiate(mediumVillagePrefab,mediumVillagePrefab.transform.position + new Vector3(8, 0, 5), Quaternion.identity);
         // grid.gridArray[8,5].SetFloor(medVillage, 0.25f + 0.5f);
         // grid.pathNodes[8,5].isWalkable = true;
         // grid.pathNodes[8,5].tag = mediumVillagePrefab.tag;
-        GameObject medVillage = UnityEngine.Object.Instantiate(mediumVillagePrefab,mediumVillagePrefab.transform.position + new Vector3(5, 0, 3), Quaternion.identity);
-        grid.gridArray[5,3].SetFloor(medVillage, 0.75f);
-        grid.pathNodes[5,3].isWalkable = true;
-        grid.pathNodes[5,3].tag = mediumVillagePrefab.tag;
-        GameObject newUnit = UnityEngine.Object.Instantiate(unitPrefab, unitPrefab.transform.position + new Vector3(5, 0, 3), Quaternion.identity);
-        grid.gridArray[5,3].AddUnit(5, 3, newUnit);
-        units.Add(newUnit);
+        GameObject medVillage = UnityEngine.Object.Instantiate(mediumVillagePrefab, mediumVillagePrefab.transform.position + new Vector3(5, 0, 3), Quaternion.identity);
+        grid.gridArray[5, 3].SetFloor(medVillage, 0.75f);
+        grid.pathNodes[5, 3].isWalkable = true;
+        grid.pathNodes[5, 3].tag = mediumVillagePrefab.tag;
+        GameObject villager = UnityEngine.Object.Instantiate(unitPrefab, unitPrefab.transform.position + new Vector3(5, 0, 3), Quaternion.identity);
+        grid.gridArray[5, 3].AddUnit(5, 3, villager, flagPrefab);
+        units.Add(villager);
+        GameObject village = UnityEngine.Object.Instantiate(villageGO, villageGO.transform.position + new Vector3(5, 0, 3), Quaternion.identity);
+        grid.gridArray[5, 3].AddUnit(5, 3, village, flagPrefab);
+        units.Add(village);
 
-        GenerateFloorTile("medium", 5,8); 
-        GenerateFloorTile("medium", 5,7); 
-        GenerateFloorTile("medium", 4,7);  
-        GenerateFloorTile("medium", 8,3);
-        GenerateFloorTile("medium", 3,2);
-        GenerateFloorTile("medium", 2,2);
+        GameObject trees = UnityEngine.Object.Instantiate(treesGO, treesGO.transform.position + new Vector3(2, 0, 5), Quaternion.identity);
+        grid.gridArray[2, 5].AddUnit(2, 5, trees, flagPrefab);
+        units.Add(trees);
 
-        GenerateFloorTile("large", 6,7); 
-        GenerateFloorTile("large", 1,5); 
-        GenerateFloorTile("large", 1,4); 
-        GenerateFloorTile("large", 3,3);
-        GenerateFloorTile("large", 1,2);
+        village.GetComponent<Village>().trees = trees;
+        village.GetComponent<Village>().villager = villager;
+        village.GetComponent<Village>().pf = this.pf;
+        Debug.Log("did they get set?");
+        Debug.Log(village.GetComponent<Village>().trees);
+        Debug.Log(village.GetComponent<Village>().villager);
 
 
-        GenerateFloorTile("small", 8,5);
-        GenerateFloorTile("small", 3,6);
-        GenerateFloorTile("small", 4,6);
-        GenerateFloorTile("small", 4,3);
-        GenerateFloorTile("small", 4,2);
-        GenerateFloorTile("small", 5,2);
-        GenerateFloorTile("small", 7,3); 
-        GenerateFloorTile("small", 7,2);
+        GenerateFloorTile("medium", 5, 8);
+        GenerateFloorTile("medium", 5, 7);
+        GenerateFloorTile("medium", 4, 7);
+        GenerateFloorTile("medium", 8, 3);
+        GenerateFloorTile("medium", 3, 2);
+        GenerateFloorTile("medium", 2, 2);
+
+        GenerateFloorTile("large", 6, 7);
+        GenerateFloorTile("large", 1, 5);
+        GenerateFloorTile("large", 1, 4);
+        GenerateFloorTile("large", 3, 3);
+        GenerateFloorTile("large", 1, 2);
+
+
+        GenerateFloorTile("small", 8, 5);
+        GenerateFloorTile("small", 3, 6);
+        GenerateFloorTile("small", 4, 6);
+        GenerateFloorTile("small", 4, 3);
+        GenerateFloorTile("small", 4, 2);
+        GenerateFloorTile("small", 5, 2);
+        GenerateFloorTile("small", 7, 3);
+        GenerateFloorTile("small", 7, 2);
     }
 
-    public void GenerateFloorTile(String size, int x, int z) {
+    public void GenerateFloorTile(String size, int x, int z)
+    {
 
-        if(size == "small"){
+        if (size == "small")
+        {
             GameObject small = UnityEngine.Object.Instantiate(smallPrefab, smallPrefab.transform.position + new Vector3(x, 0, z), Quaternion.identity);
-            grid.gridArray[x,z].SetFloor(small, -0.25f + 0.5f);
-            grid.pathNodes[x,z].isWalkable = true;
-            grid.pathNodes[x,z].tag = smallPrefab.tag;
-        }else if(size == "medium"){
+            grid.gridArray[x, z].SetFloor(small, -0.25f + 0.5f);
+            grid.pathNodes[x, z].isWalkable = true;
+            grid.pathNodes[x, z].tag = smallPrefab.tag;
+        }
+        else if (size == "medium")
+        {
             GameObject medium = UnityEngine.Object.Instantiate(mediumPrefab, mediumPrefab.transform.position + new Vector3(x, 0, z), Quaternion.identity);
-            grid.gridArray[x,z].SetFloor(medium, 0.25f + 0.5f);
-            grid.pathNodes[x,z].isWalkable = true;
-            grid.pathNodes[x,z].tag = mediumPrefab.tag;
-        }else if(size == "large"){
+            grid.gridArray[x, z].SetFloor(medium, 0.25f + 0.5f);
+            grid.pathNodes[x, z].isWalkable = true;
+            grid.pathNodes[x, z].tag = mediumPrefab.tag;
+        }
+        else if (size == "large")
+        {
             GameObject large = UnityEngine.Object.Instantiate(largePrefab, largePrefab.transform.position + new Vector3(x, 0, z), Quaternion.identity);
-            grid.gridArray[x,z].SetFloor(large, 0.75f + 0.5f);
-            grid.pathNodes[x,z].isWalkable = true;
-            grid.pathNodes[x,z].tag = largePrefab.tag;
+            grid.gridArray[x, z].SetFloor(large, 0.75f + 0.5f);
+            grid.pathNodes[x, z].isWalkable = true;
+            grid.pathNodes[x, z].tag = largePrefab.tag;
         }
     }
 
-    
-    public void MouseSelection(){
-        if(inBridgeMode){
-            BridgeSelectionCommands(); 
-        }else{
+
+    public void MouseSelection()
+    {
+        if (inBridgeMode)
+        {
+            BridgeSelectionCommands();
+        }
+        else
+        {
             MouseGridCommands();
         }
     }
 
-    public void BridgeSelectionCommands(){
+    public void BridgeSelectionCommands()
+    {
         if (Input.GetMouseButtonDown(0))
         {
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        
-            if (Physics.Raycast(ray, out hit)) 
+
+            if (Physics.Raycast(ray, out hit))
             {
                 GameObject objectHit = hit.transform.gameObject;
-                
+
                 SelectBridgeTile(objectHit);
             }
         }
@@ -291,11 +321,11 @@ public class GameManager : MonoBehaviour
         {
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        
-            if (Physics.Raycast(ray, out hit)) 
+
+            if (Physics.Raycast(ray, out hit))
             {
                 GameObject objectHit = hit.transform.gameObject;
-                
+
                 Select(objectHit);
             }
         }
@@ -304,24 +334,24 @@ public class GameManager : MonoBehaviour
         {
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        
-            if (Physics.Raycast(ray, out hit)) 
+
+            if (Physics.Raycast(ray, out hit))
             {
                 int x;
                 int z;
                 grid.GetXY(hit.transform.position, out x, out z);
                 // Only allow this flag setting to occur if the targeted game object is a tile
-                if(selected.GetComponent<Unit>())
+                if (selected.GetComponent<Unit>())
                 {
                     MetaInformation mi = selected.GetComponent<MetaInformation>();
                     Debug.Log(selected);
                     selected.GetComponent<MoveQueue>().Clear();
                     selected.GetComponent<Highlight>().RemoveFlag();
-                    if (grid.pathNodes[x,z].isWalkable)
+                    if (grid.pathNodes[x, z].isWalkable)
                     {
                         if (pf.FindPath(mi.x, mi.z, x, z) != null)
                         {
-                            selected.GetComponent<Highlight>().PlaceFlag(x, grid.gridArray[x,z].height, z, flagPrefab);
+                            selected.GetComponent<Highlight>().PlaceFlag(x, grid.gridArray[x, z].height, z, flagPrefab);
                         }
                     }
                 }
@@ -330,7 +360,7 @@ public class GameManager : MonoBehaviour
 
         foreach (var unitClone in units)
         {
-            if(unitClone.GetComponent<Unit>() && unitClone.GetComponent<MoveQueue>())
+            if (unitClone.GetComponent<Unit>() && unitClone.GetComponent<MoveQueue>())
             {
                 MoveQueue mq = unitClone.GetComponent<MoveQueue>();
                 if (unitClone.GetComponent<State>().GetState() == Constants.BUSY)
@@ -396,100 +426,125 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void SelectBridgeTile(GameObject tile){
-        if(selectedBridgeTile == tile){
-            return; 
+    public void SelectBridgeTile(GameObject tile)
+    {
+        if (selectedBridgeTile == tile)
+        {
+            return;
         }
-        if(selectedBridgeTile == null ){
-            selectedBridgeTile = tile; 
+        if (selectedBridgeTile == null)
+        {
+            selectedBridgeTile = tile;
             Debug.Log("First bridge tile");
-        } else{ // there is a selected bridge tile different than this tile 
+        }
+        else
+        { // there is a selected bridge tile different than this tile 
             Debug.Log("Second bridge tile");
             placeBridge(selectedBridgeTile, tile);
-            selectedBridgeTile = null; 
-            inBridgeMode = false; 
+            selectedBridgeTile = null;
+            inBridgeMode = false;
             mainCamera.backgroundColor = gameBackgroundColor;
         }
     }
 
-    public void placeBridge(GameObject src, GameObject dst){
+    public void placeBridge(GameObject src, GameObject dst)
+    {
         int srcX, srcZ;
-        int dstX, dstZ; 
-        grid.GetXY(src.transform.position, out srcX, out srcZ); 
-        grid.GetXY(dst.transform.position, out dstX, out dstZ); 
-        Debug.Log(src.tag); 
+        int dstX, dstZ;
+        grid.GetXY(src.transform.position, out srcX, out srcZ);
+        grid.GetXY(dst.transform.position, out dstX, out dstZ);
+        Debug.Log(src.tag);
         Debug.Log("source position: " + srcX + ", " + srcZ);
-        if(src.tag != dst.tag || !(srcX==dstX || srcZ==dstZ)){
-            Debug.Log("Can't place bridge"); 
-            selectedBridgeTile = null; 
-            return; 
+        if (src.tag != dst.tag || !(srcX == dstX || srcZ == dstZ))
+        {
+            Debug.Log("Can't place bridge");
+            selectedBridgeTile = null;
+            return;
         }
 
-        int bridgeX, bridgeZ; 
-        if(srcX == dstX && Math.Abs(srcZ-dstZ) == 2){
+        int bridgeX, bridgeZ;
+        if (srcX == dstX && Math.Abs(srcZ - dstZ) == 2)
+        {
             bridgeX = srcX;
-            bridgeZ = (srcZ + dstZ) / 2; 
+            bridgeZ = (srcZ + dstZ) / 2;
         }
-        else if (srcZ == dstZ && Math.Abs(srcX-dstX) == 2){
+        else if (srcZ == dstZ && Math.Abs(srcX - dstX) == 2)
+        {
             bridgeZ = srcZ;
-            bridgeX = (srcX + dstX) / 2; 
+            bridgeX = (srcX + dstX) / 2;
         }
-        else {
-            Debug.Log("Can't place bridge"); 
-            selectedBridgeTile = null; 
-            return; 
+        else
+        {
+            Debug.Log("Can't place bridge");
+            selectedBridgeTile = null;
+            return;
         }
-        
-        float bridgeHeight; 
-        if(src.tag == "E1"){
-           bridgeHeight = bridgeE1_y; 
-           grid.gridArray[bridgeX, bridgeZ].height = 0.25f;
-        } else if(src.tag == "E2"){
-            bridgeHeight = bridgeE2_y; 
+
+        float bridgeHeight;
+        if (src.tag == "E1")
+        {
+            bridgeHeight = bridgeE1_y;
+            grid.gridArray[bridgeX, bridgeZ].height = 0.25f;
+        }
+        else if (src.tag == "E2")
+        {
+            bridgeHeight = bridgeE2_y;
             grid.gridArray[bridgeX, bridgeZ].height = 0.75f;
-        } else if(src.tag == "E3"){
+        }
+        else if (src.tag == "E3")
+        {
             bridgeHeight = bridgeE3_y;
             grid.gridArray[bridgeX, bridgeZ].height = 1.25f;
-        } else {
-            Debug.Log("Can't place bridge"); 
-            selectedBridgeTile = null; 
-            return; 
         }
-           GameObject bridge = UnityEngine.Object.Instantiate(bridgeE1_Left, new Vector3(bridgeX, bridgeHeight, bridgeZ), Quaternion.identity);
-           grid.gridArray[bridgeX,bridgeZ].AddUnit(bridgeX, bridgeZ, bridge); 
-           // Make node now walkable too, also the height will depend on the bridge type
-           grid.pathNodes[bridgeX, bridgeZ].isWalkable = true;
-           grid.pathNodes[bridgeX, bridgeZ].tag = src.tag;
+        else
+        {
+            Debug.Log("Can't place bridge");
+            selectedBridgeTile = null;
+            return;
+        }
+        GameObject bridge = UnityEngine.Object.Instantiate(bridgeE1_Left, new Vector3(bridgeX, bridgeHeight, bridgeZ), Quaternion.identity);
+        grid.gridArray[bridgeX, bridgeZ].AddUnit(bridgeX, bridgeZ, bridge, flagPrefab);
+        // Make node now walkable too, also the height will depend on the bridge type
+        grid.pathNodes[bridgeX, bridgeZ].isWalkable = true;
+        grid.pathNodes[bridgeX, bridgeZ].tag = src.tag;
     }
 
-    public static Vector3 GetMouseWorldPosition() 
+    public static Vector3 GetMouseWorldPosition()
     {
         Vector3 vec = GetMouseWorldPositionWithY(Input.mousePosition, Camera.main);
         vec.y = 0f;
         return vec;
     }
-    public static Vector3 GetMouseWorldPositionWithY() {
+    public static Vector3 GetMouseWorldPositionWithY()
+    {
         return GetMouseWorldPositionWithY(Input.mousePosition, Camera.main);
     }
-    public static Vector3 GetMouseWorldPositionWithY(Camera worldCamera) {
+    public static Vector3 GetMouseWorldPositionWithY(Camera worldCamera)
+    {
         return GetMouseWorldPositionWithY(Input.mousePosition, worldCamera);
     }
-    public static Vector3 GetMouseWorldPositionWithY(Vector3 screenPosition, Camera worldCamera) {
+    public static Vector3 GetMouseWorldPositionWithY(Vector3 screenPosition, Camera worldCamera)
+    {
         Vector3 worldPosition = worldCamera.ScreenToWorldPoint(screenPosition);
         return worldPosition;
     }
 
     #endregion
 
-    public void EnterBridgeMode(){
-        if(Input.GetKeyDown("b")){
-            if(inBridgeMode){
-                selectedBridgeTile = null; 
-                inBridgeMode = false; 
-                 mainCamera.backgroundColor = gameBackgroundColor;
-            } else {
-                inBridgeMode = true; 
-                 mainCamera.backgroundColor = bridgeBackgroundColor;
+    public void EnterBridgeMode()
+    {
+        if (Input.GetKeyDown("b"))
+        {
+            if (inBridgeMode)
+            {
+                selectedBridgeTile = null;
+                inBridgeMode = false;
+                mainCamera.backgroundColor = gameBackgroundColor;
+            }
+            else
+            {
+                inBridgeMode = true;
+                mainCamera.backgroundColor = bridgeBackgroundColor;
             }
         }
     }
