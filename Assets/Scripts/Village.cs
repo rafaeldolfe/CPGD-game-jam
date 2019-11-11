@@ -5,8 +5,7 @@ using UnityEngine;
 public class Village : MonoBehaviour
 {
     public GameObject villager;
-    public GameObject trees;
-    public GameObject trees2;
+    public List<GameObject> trees;
     public Pathfinding pf;
     public GameManager gm;
     public MetaInformation mi;
@@ -19,7 +18,52 @@ public class Village : MonoBehaviour
     }
     public void Update()
     {
-        MetaInformation treeMI = trees.GetComponent<MetaInformation>();
+        // List<List<PathNode>> paths;
+        // foreach (GameObject tree in trees)
+        // {
+        //     MetaInformation treeMI = tree.GetComponent<MetaInformation>();
+
+        //     paths.Add(pf.FindPath(villager.GetComponent<MetaInformation>().x, villager.GetComponent<MetaInformation>().z, treeMI.x, treeMI.z));
+        // }
+
+        // if (paths.Count == 0)
+        // {
+        //     return;
+        // }
+
+        // int count = int.MaxValue;
+        // List<PathNode> minPath = null;
+
+
+        // foreach (List<PathNode> path in paths)
+        // {
+        //     if (path.Count < count)
+        //     {
+        //         count = path.Count;
+        //         minPath = path;
+        //     }
+        // }
+
+        // if (villager.GetComponent<State>().GetState() == Constants.IDLE)
+        // {
+        //     if (villager.GetComponent<MetaInformation>().x == mi.x && villager.GetComponent<MetaInformation>().z == mi.z)
+        //     {
+        //         if (holdingResource)
+        //         {
+        //             gm.UpdateResources(1);
+        //             holdingResource = false;
+        //         }
+
+        //         if (minPath != null)
+        //         {
+        //             villager.GetComponent<Highlight>().PlaceFlag(treeMI2.x, mi.grid.gridArray[treeMI2.x, treeMI2.z].height, treeMI2.z, mi.flagPrefab);
+        //         }
+        //     }
+        // }
+
+
+
+
         MetaInformation treeMI2 = trees2.GetComponent<MetaInformation>();
         if (villager.GetComponent<State>().GetState() == Constants.IDLE)
         {
